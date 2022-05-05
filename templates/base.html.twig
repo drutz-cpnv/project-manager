@@ -2,7 +2,7 @@
 <html>
     <head>
         <meta charset="UTF-8">
-        <title>{% block title %}Welcome!{% endblock %}</title>
+        <title>Junior Entreprise</title>
         <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 128 128%22><text y=%221.2em%22 font-size=%2296%22>⚫️</text></svg>">
         {# Run `composer require symfony/webpack-encore-bundle` to start using Symfony UX #}
         {% block stylesheets %}
@@ -14,6 +14,69 @@
         {% endblock %}
     </head>
     <body>
-        {% block body %}{% endblock %}
+
+
+    <div class="container-fluid">
+        <div class="row">
+            <header class="p-3 bg-dark text-white" style="z-index: 1000000">
+                <div class="d-flex flex-wrap align-items-center justify-content-center justify-content-lg-between">
+                    <a href="/" class="d-flex align-items-center mb-2 mb-lg-0 text-white text-decoration-none">
+                        <img src="{{asset('assets/images/logo.svg')}}" width="160" alt="Logo de la Junior Entreprise">
+                    </a>
+
+
+                    <div class="text-end">
+                        <button type="button" class="btn btn-outline-light me-2">Login</button>
+                        <button type="button" class="btn btn-warning">Sign-up</button>
+                    </div>
+                </div>
+            </header>
+        </div>
+
+        <div class="row">
+            <nav id="sidebarMenu" class="col-md-3 col-lg-2 d-md-block bg-light sidebar collapse mt-5">
+                <div class="position-sticky pt-3">
+                    <ul class="nav flex-column">
+                        {{ menu('Tableau de bord', 'app.home', 'bar-chart-2', 'home') }}
+                        {{ menu('Mes projets', 'app.placeholder', 'inbox', 'project') }}
+                        {{ menu('Mes équipes', 'app.placeholder', 'users', 'teams') }}
+                    </ul>
+
+                    <h6 class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1 text-muted">
+                        <span>Administration</span>
+                        {#<a class="link-secondary" href="#" aria-label="Add a new report">
+                            <span data-feather="plus-circle"></span>
+                        </a>#}
+                    </h6>
+                    <ul class="nav flex-column mb-2">
+                        {{ menu('Projets', 'admin.project.index', 'inbox', 'admin.project') }}
+                        {{ menu('Mandats', 'app.placeholder', 'bookmark', 'admin.mandate') }}
+                        {{ menu('Utilisateurs', 'app.placeholder', 'users', 'admin.user') }}
+                        {{ menu('Clients', 'app.placeholder', 'users', 'admin.client') }}
+                        {{ menu('Paramètres', 'app.placeholder', 'settings', 'admin.setting') }}
+                    </ul>
+                </div>
+            </nav>
+
+            <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
+                <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+                    <h1 class="h2">{% block title %}Titre{% endblock %}</h1>
+                    <div class="btn-toolbar mb-2 mb-md-0">
+                        <div class="btn-group me-2">
+                            <button type="button" class="btn btn-sm btn-outline-secondary">Share</button>
+                            <button type="button" class="btn btn-sm btn-outline-secondary">Export</button>
+                        </div>
+                        <button type="button" class="btn btn-sm btn-outline-secondary dropdown-toggle">
+                            <span data-feather="calendar"></span>
+                            This week
+                        </button>
+                    </div>
+                </div>
+                {% block body %}{% endblock %}
+            </main>
+        </div>
+    </div>
+
     </body>
 </html>
+

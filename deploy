@@ -1,0 +1,5 @@
+#!/bin/sh
+npm run build
+ssh c167_multimedia@lapin.web.wellhosted.ch 'cd /web/public && rm -rf build'
+rsync -av ./ c167_multimedia@lapin.web.wellhosted.ch:/web --include=public/build --include=vendor --exclude-from=.gitignore --exclude=".*" --exclude=deploy --exclude=assets --exclude=migrations
+ssh c167_multimedia@lapin.web.wellhosted.ch 'cd /web && php8.1 bin/console cache:clear'
