@@ -19,13 +19,11 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 use SymfonyCasts\Bundle\VerifyEmail\Exception\VerifyEmailExceptionInterface;
 
 #[Route(name: "security.")]
-class SecurityController extends AbstractController
+class SecurityController extends BaseController
 {
-    private EmailVerifier $emailVerifier;
 
-    public function __construct(EmailVerifier $emailVerifier)
+    public function __construct(private EmailVerifier $emailVerifier)
     {
-        $this->emailVerifier = $emailVerifier;
     }
 
     #[Route('/register', name: 'register')]
@@ -52,6 +50,8 @@ class SecurityController extends AbstractController
                 )
             );
 
+            $person->setUser($user);
+
             $entityManager->persist($user);
             $entityManager->flush();
 
@@ -59,13 +59,13 @@ class SecurityController extends AbstractController
             $this->emailVerifier->sendEmailConfirmation('security.verify_email', $user,
                 (new TemplatedEmail())
                     ->from(new Address('junior-entreprise@je.drutz.ch', 'Junior Entreprise'))
-                    ->to($user->getUsername())
-                    ->subject('Please Confirm your Email')
+                    ->to($user->getEmail())
+                    ->subject('Veuillez confirmer votre demande d\'accès')
                     ->htmlTemplate('registration/confirmation_email.html.twig')
             );
             // do anything else you need here, like send an email
 
-            return $this->redirectToRoute('_wdt');
+            return $this->redirectToRoute('app.home');
         }
 
         return $this->render('registration/register.html.twig', [
@@ -94,7 +94,7 @@ class SecurityController extends AbstractController
         }
 
         // @TODO Change the redirect on success and handle or remove the flash message in your templates
-        $this->addFlash('success', 'Your email address has been verified.');
+        $this->addFlash('success', 'Votre compte a été verifié');
 
         return $this->redirectToRoute('security.register');
     }

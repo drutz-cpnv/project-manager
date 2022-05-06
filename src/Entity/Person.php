@@ -40,14 +40,10 @@ class Person
     #[ORM\Column(type: 'integer', nullable: true)]
     private $externalId;
 
-    #[ORM\ManyToMany(targetEntity: Client::class, mappedBy: 'representative')]
-    private $clients;
-
     public function __construct()
     {
         $this->setCreatedAt(new \DateTimeImmutable());
         $this->setUpdatedAt(new \DateTimeImmutable());
-        $this->clients = new ArrayCollection();
     }
 
     /**
@@ -169,30 +165,4 @@ class Person
         return $this;
     }
 
-    /**
-     * @return Collection<int, Client>
-     */
-    public function getClients(): Collection
-    {
-        return $this->clients;
-    }
-
-    public function addClient(Client $client): self
-    {
-        if (!$this->clients->contains($client)) {
-            $this->clients[] = $client;
-            $client->addRepresentative($this);
-        }
-
-        return $this;
-    }
-
-    public function removeClient(Client $client): self
-    {
-        if ($this->clients->removeElement($client)) {
-            $client->removeRepresentative($this);
-        }
-
-        return $this;
-    }
 }

@@ -18,7 +18,7 @@ class Project
     #[ORM\Column(type: 'datetime_immutable')]
     private $createdAt;
 
-    #[ORM\ManyToOne(targetEntity: User::class, inversedBy: 'projects')]
+    #[ORM\ManyToOne(targetEntity: User::class, inversedBy: 'createdProjects')]
     private $createdBy;
 
     #[ORM\Column(type: 'datetime_immutable')]
@@ -35,6 +35,9 @@ class Project
 
     #[ORM\ManyToOne(targetEntity: User::class, inversedBy: 'supervisedProjects')]
     private $coach;
+
+    #[ORM\ManyToOne(targetEntity: Mandate::class, inversedBy: 'projects')]
+    private $mandate;
 
     public function __construct()
     {
@@ -163,6 +166,18 @@ class Project
     public function setCoach(?User $coach): self
     {
         $this->coach = $coach;
+
+        return $this;
+    }
+
+    public function getMandate(): ?Mandate
+    {
+        return $this->mandate;
+    }
+
+    public function setMandate(?Mandate $mandate): self
+    {
+        $this->mandate = $mandate;
 
         return $this;
     }

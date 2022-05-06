@@ -21,6 +21,8 @@
     },
     "dependencies": {
         "bootstrap": "^5.1.3",
-        "feather-icons": "^4.29.0"
+        "feather-icons": "^4.29.0",
+        "quill": "^1.3.6",
+        "tom-select": "^2.0.1"
     }
 }
