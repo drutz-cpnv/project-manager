@@ -1,0 +1,45 @@
+{% extends 'base.html.twig' %}
+
+{% set hasNavTabs = true %}
+
+{% block title %}{{ project.uid }} — {{ project.title }}{% endblock %}
+
+{% block navTabs %}
+    {{ include('partials/_project_nav_header.html.twig') }}
+{% endblock %}
+
+{% block body %}
+    <main class="w-75 mx-auto mt-5">
+        <h2 class="h1 mb-5">Informations</h2>
+        <h3 class="h3">{{ project.title }}</h3>
+        <p class="fs-5 col-md-8">{{ project.description | nl2br }}</p>
+
+        <hr class="col-3 col-md-2 mb-5">
+
+        <div class="row g-5">
+            <div class="col-md-6">
+                <h2>Détails</h2>
+                <p>Détails de la demande de mandat</p>
+                <ul class="">
+                    <li><strong>Date validée par le cahier des charges : </strong>{% if project.specificationsEndDate is defined %}{{ project.specificationsEndDate | date("d.m.Y") }}{% else %}<span class="text-danger">Aucune date validée</span>{% endif %}</li>
+                    <li><strong>Date souhaitée : </strong>{{ project.mandate.desiredDate | date("d.m.Y") }}</li>
+                    <li><strong>Client : </strong>{{ project.mandate.client }}</li>
+                    <li><strong>Date de création : </strong>{{ project.mandate.createdAt | date("d.m.Y H:i") }}</li>
+                </ul>
+            </div>
+
+            <div class="col-md-6">
+                <h2>Fichiers</h2>
+                <p>Voici les fichiers fournis par le client dans le but d'étailler ça demande de mandat.</p>
+                <ul class="icon-list">
+                    <li><a href="#">Bootstrap quick start guide</a></li>
+                    <li><a href="#">Bootstrap Webpack guide</a></li>
+                    <li><a href="#">Bootstrap Parcel guide</a></li>
+                    <li><a href="#">Contributing to Bootstrap</a></li>
+                </ul>
+            </div>
+        </div>
+    </main>
+{% endblock %}
+
+

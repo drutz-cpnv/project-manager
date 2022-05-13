@@ -4,6 +4,7 @@ namespace App\Http\Twig;
 
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Twig\Extension\AbstractExtension;
+use Twig\TwigFilter;
 use Twig\TwigFunction;
 use Twig\TwigTest;
 
@@ -23,6 +24,13 @@ class TwigExtension extends AbstractExtension
             new TwigFunction('feather', [$this, 'feather'], ['is_safe' => ['html']]),
             new TwigFunction('menu', [$this, 'menu'], ['is_safe' => ['html'], 'needs_context' => true]),
             new TwigFunction('tabActive', [$this, 'tabActive'], ['is_safe' => ['html'], 'needs_context' => true]),
+        ];
+    }
+
+    public function getFilters(): array
+    {
+        return [
+            new TwigFilter('strpad', [$this, 'strpad']),
         ];
     }
 
@@ -52,11 +60,11 @@ HTML;
 
     }
 
-    public function menu(array $context, string $title, string $pathName, string $icon, string $menuName): string
+    public function menu(array $context, string $title, string $pathName, string $icon, string $menuName, string $atlernativeMenuName = null): string
     {
         $url = $this->urlGenerator->generate($pathName);
         $currentPage = "";
-        if (($context['menu'] ?? null) === $menuName) {
+        if ((($context['menu'] ?? null) === $menuName) || (($context['menu'] ?? null) === $atlernativeMenuName)) {
             $currentPage = ' aria-current="page"';
         }
         return <<<HTML
@@ -67,6 +75,10 @@ HTML;
     </a>
 </li>
 HTML;
+    }
+
+    public function strpad($number, $pad_length, $pad_string) {
+        return str_pad($number, $pad_length, $pad_string, STR_PAD_LEFT);
     }
 
     public function tabActive(array $context, string $name): string

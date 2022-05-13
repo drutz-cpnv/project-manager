@@ -45,6 +45,24 @@ class MilestoneRepository extends ServiceEntityRepository
         }
     }
 
+    public function findByFormData(array $data): array
+    {
+        $q = $this->createQueryBuilder('m');
+
+        foreach ($data as $key => $milestone) {
+            $q
+                ->orWhere("m.id = :p$key")
+                ->setParameter("p$key", $key);
+        }
+
+        return $q
+            ->orderBy('m.id', 'ASC')
+            ->setMaxResults(10)
+            ->getQuery()
+            ->getResult()
+            ;
+    }
+
     // /**
     //  * @return Milestone[] Returns an array of Milestone objects
     //  */

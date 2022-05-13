@@ -40,10 +40,23 @@ class Person
     #[ORM\Column(type: 'integer', nullable: true)]
     private $externalId;
 
+    #[ORM\OneToMany(mappedBy: 'coach', targetEntity: Project::class)]
+    private $supervisedProjects;
+
+    #[ORM\ManyToOne(targetEntity: Classe::class, inversedBy: 'students')]
+    private $class;
+
+    #[ORM\Column(type: 'boolean', nullable: true)]
+    private $canCoach = false;
+
+    #[ORM\OneToOne(mappedBy: 'person', targetEntity: Client::class, cascade: ['persist', 'remove'])]
+    private $client;
+
     public function __construct()
     {
         $this->setCreatedAt(new \DateTimeImmutable());
         $this->setUpdatedAt(new \DateTimeImmutable());
+        $this->supervisedProjects = new ArrayCollection();
     }
 
     /**
@@ -122,6 +135,21 @@ class Person
         return $this->type;
     }
 
+    public function isStudent(): bool
+    {
+        return $this->getType()->getSlug() === 'student';
+    }
+
+    public function isTeacher(): bool
+    {
+        return $this->getType()->getSlug() === 'teacher';
+    }
+
+    public function isClient(): bool
+    {
+        return $this->getType()->getSlug() === 'client';
+    }
+
     public function setType(?PersonType $type): self
     {
         $this->type = $type;
@@ -161,6 +189,87 @@ class Person
     public function setExternalId(?int $externalId): self
     {
         $this->externalId = $externalId;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Project>
+     */
+    public function getSupervisedProjects(): Collection
+    {
+        return $this->supervisedProjects;
+    }
+
+    public function addSupervisedProject(Project $supervisedProject): self
+    {
+        if (!$this->supervisedProjects->contains($supervisedProject)) {
+            $this->supervisedProjects[] = $supervisedProject;
+            $supervisedProject->setCoach($this);
+        }
+
+        return $this;
+    }
+
+    public function removeSupervisedProject(Project $supervisedProject): self
+    {
+        if ($this->supervisedProjects->removeElement($supervisedProject)) {
+            // set the owning side to null (unless already changed)
+            if ($supervisedProject->getCoach() === $this) {
+                $supervisedProject->setCoach(null);
+            }
+        }
+
+        return $this;
+    }
+
+    public function getClass(): ?Classe
+    {
+        return $this->class;
+    }
+
+    public function setClass(?Classe $class): self
+    {
+        $this->class = $class;
+
+        return $this;
+    }
+
+    public function __toString(): string
+    {
+        return $this->getLastname() . " " . $this->getFirstname();
+    }
+
+    public function getCanCoach(): ?bool
+    {
+        return $this->canCoach;
+    }
+
+    public function setCanCoach(?bool $canCoach): self
+    {
+        $this->canCoach = $canCoach;
+
+        return $this;
+    }
+
+    public function getClient(): ?Client
+    {
+        return $this->client;
+    }
+
+    public function setClient(?Client $client): self
+    {
+        // unset the owning side of the relation if necessary
+        if ($client === null && $this->client !== null) {
+            $this->client->setPerson(null);
+        }
+
+        // set the owning side of the relation if necessary
+        if ($client !== null && $client->getPerson() !== $this) {
+            $client->setPerson($this);
+        }
+
+        $this->client = $client;
 
         return $this;
     }

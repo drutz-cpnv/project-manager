@@ -1,0 +1,14 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Mandat — {{ mandate.uid | strpad(3, '0') }}{% endblock %}
+
+{% block headerBtn %}
+    <div class="d-flex gap-2">
+        {{include('admin/mandate/_accept_form.html.twig')}}
+        {{include('admin/mandate/_refuse_form.html.twig')}}
+    </div>
+{% endblock %}
+
+{% block body %}
+    {{ include('partials/mandate/_show.html.twig') }}
+{% endblock %}

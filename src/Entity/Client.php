@@ -33,6 +33,9 @@ class Client
     #[ORM\Column(type: 'string', length: 255, nullable: true)]
     private $phoneNumber;
 
+    #[ORM\OneToOne(inversedBy: 'client', targetEntity: Person::class, cascade: ['persist', 'remove'])]
+    private $person;
+
     public function __construct()
     {
         $this->representative = new ArrayCollection();
@@ -147,6 +150,18 @@ class Client
     public function setPhoneNumber(?string $phoneNumber): self
     {
         $this->phoneNumber = $phoneNumber;
+
+        return $this;
+    }
+
+    public function getPerson(): ?Person
+    {
+        return $this->person;
+    }
+
+    public function setPerson(?Person $person): self
+    {
+        $this->person = $person;
 
         return $this;
     }

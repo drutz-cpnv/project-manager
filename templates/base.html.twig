@@ -17,7 +17,7 @@
 
 
     <div class="container-fluid">
-        <div class="row">
+        <div class="row sticky-top">
             <header class="p-3 bg-dark text-white" style="z-index: 1000000">
                 <div class="d-flex flex-wrap align-items-center justify-content-center justify-content-lg-between">
                     <a href="/" class="d-flex align-items-center mb-2 mb-lg-0 text-white text-decoration-none">
@@ -33,14 +33,45 @@
         </div>
 
         <div class="row">
-            <nav id="sidebarMenu" class="col-md-3 col-lg-2 d-md-block bg-light sidebar collapse mt-5">
+            <nav id="sidebarMenu" class="col-md-3 col-lg-2 d-md-block bg-light sidebar collapse mt-4">
                 <div class="position-sticky pt-3">
                     <ul class="nav flex-column">
                         {{ menu('Tableau de bord', 'app.home', 'bar-chart-2', 'home') }}
-                        {{ menu('Mes projets', 'app.placeholder', 'inbox', 'project') }}
+                        {{ menu('Mes projets', 'app.my_projects', 'inbox', 'projects', 'my-projects') }}
                         {{ menu('Mes équipes', 'app.placeholder', 'users', 'teams') }}
                     </ul>
 
+                    {% if is_granted("ROLE_DIRECTOR") %}
+                    <h6 class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1 text-muted">
+                        <span>Direction</span>
+                        {#<a class="link-secondary" href="#" aria-label="Add a new report">
+                            <span data-feather="plus-circle"></span>
+                        </a>#}
+                    </h6>
+                    <ul class="nav flex-column mb-2">
+                        {{ menu('Projets', 'project.index', 'inbox', 'projects') }}
+                        {{ menu('Mandats', 'direje.mandate.index', 'bookmark', 'direje.mandate') }}
+                        {#{{ menu('Projets', 'dir.project.index', 'inbox', 'dir.project') }}#}
+                        {#{{ menu('Mes équipes', 'dir.teams.index', 'users', 'dir.teams') }}#}
+                    </ul>
+                    {% endif %}
+
+                    {% if is_granted("ROLE_COPIL") %}
+                    <h6 class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1 text-muted">
+                        <span>COPIL</span>
+                        {#<a class="link-secondary" href="#" aria-label="Add a new report">
+                            <span data-feather="plus-circle"></span>
+                        </a>#}
+                    </h6>
+                    <ul class="nav flex-column mb-2">
+                        {{ menu('Projets', 'project.index', 'inbox', 'projects') }}
+                        {{ menu('Mandats', 'admin.mandate.index', 'bookmark', 'admin.mandate') }}
+                        {{ menu('Clients', 'app.placeholder', 'users', 'admin.client') }}
+                    </ul>
+
+                    {% endif %}
+
+                    {% if is_granted("ROLE_ADMIN") %}
                     <h6 class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1 text-muted">
                         <span>Administration</span>
                         {#<a class="link-secondary" href="#" aria-label="Add a new report">
@@ -48,31 +79,48 @@
                         </a>#}
                     </h6>
                     <ul class="nav flex-column mb-2">
-                        {{ menu('Projets', 'admin.project.index', 'inbox', 'admin.project') }}
-                        {{ menu('Mandats', 'admin.mandate.index', 'bookmark', 'admin.mandate') }}
                         {{ menu('Utilisateurs', 'app.placeholder', 'users', 'admin.user') }}
-                        {{ menu('Clients', 'app.placeholder', 'users', 'admin.client') }}
                         {{ menu('Paramètres', 'app.placeholder', 'settings', 'admin.setting') }}
                     </ul>
+                    {% endif %}
                 </div>
             </nav>
 
             <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
-                <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
-                    <h1 class="h2">{% block title %}Titre{% endblock %}</h1>
-                    <div class="btn-toolbar mb-2 mb-md-0">
-                        <div class="btn-group me-2">
-                            <button type="button" class="btn btn-sm btn-outline-secondary">Share</button>
-                            <button type="button" class="btn btn-sm btn-outline-secondary">Export</button>
-                        </div>
-                        <button type="button" class="btn btn-sm btn-outline-secondary dropdown-toggle">
+                <div class="pt-3 pb-2 mb-5 {% if hasNavTabs is not defined %}border-bottom{% endif %}">
+                    <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center">
+                        <h1 class="h2">{% block title %}Titre{% endblock %}</h1>
+                        <div class="btn-toolbar mb-2 mb-md-0">
+                            <div class="btn-group me-2">
+                                {% block headerBtn %}
+                                {% endblock %}
+                            </div>
+                            {#<button type="button" class="btn btn-sm btn-outline-secondary dropdown-toggle">
                             <span data-feather="calendar"></span>
                             This week
-                        </button>
+                        </button>#}
+                        </div>
                     </div>
+                    <div>{% block navTabs %}{% endblock %}</div>
                 </div>
                 {% block body %}{% endblock %}
             </main>
+
+            <footer class="col-md-9 ms-sm-auto col-lg-10 px-md-4 mt-5 d-flex flex-wrap justify-content-between align-items-center py-3 my-4 border-top">
+                <p class="col-md-4 mb-0 text-muted">© 2021 Company, Inc</p>
+
+                <a href="/" class="col-md-4 d-flex align-items-center justify-content-center mb-3 mb-md-0 me-md-auto link-dark text-decoration-none">
+                    <img src="{{asset('assets/images/logo.png')}}" height="32" alt="">
+                </a>
+
+                <ul class="nav col-md-4 justify-content-end">
+                    <li class="nav-item"><a href="#" class="nav-link px-2 text-muted">Home</a></li>
+                    <li class="nav-item"><a href="#" class="nav-link px-2 text-muted">Features</a></li>
+                    <li class="nav-item"><a href="#" class="nav-link px-2 text-muted">Pricing</a></li>
+                    <li class="nav-item"><a href="#" class="nav-link px-2 text-muted">FAQs</a></li>
+                    <li class="nav-item"><a href="#" class="nav-link px-2 text-muted">About</a></li>
+                </ul>
+            </footer>
         </div>
     </div>
 

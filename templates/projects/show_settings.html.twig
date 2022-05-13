@@ -1,0 +1,24 @@
+{% extends 'base.html.twig' %}
+
+{% set hasNavTabs = true %}
+
+{% block title %}{{ project.uid }} — {{ project.title }}{% endblock %}
+
+{% block navTabs %}
+    {{ include('partials/_project_nav_header.html.twig') }}
+{% endblock %}
+
+{% block body %}
+    <div class="w-75 mx-auto mt-5">
+        <h2 class="h1 mb-5">Paramètres</h2>
+        {{ form_start(form) }}
+            {{ form_row(form.specificationsEndDate) }}
+            {{ form_row(form.state) }}
+            {{ form_row(form.coach) }}
+            {{ form_row(form.class) }}
+        <button class="btn btn-primary">Enregistrer</button>
+        {{ form_end(form) }}
+    </div>
+{% endblock %}
+
+

@@ -17,6 +17,7 @@ class Mandate
     public const STATE_ACTIVE = 3;
     public const STATE_REFUSED = 4;
     public const STATE_TERMINATED = 5;
+    public const STATE_CANCEL = 6;
 
     private array $stateLabel = [
         1 => "En attente de validation par le COPIL",
@@ -24,6 +25,7 @@ class Mandate
         3 => "Actif",
         4 => "Refusé",
         5 => "Terminé",
+        6 => "Annulé",
     ];
 
     #[ORM\Id]
@@ -207,4 +209,5 @@ class Mandate
     {
         return $this->stateLabel[$state];
     }
+
 }

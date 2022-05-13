@@ -3,22 +3,35 @@
 namespace App\Services;
 
 use App\Entity\Project;
-use App\Entity\Team;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Component\Security\Core\Security;
 
 class ProjectService
 {
 
     public function __construct(
-        private readonly EntityManagerInterface $em
+        private readonly EntityManagerInterface $em,
+        private readonly Security $security,
+        private readonly DefaultService $defaultService,
     )
     {
     }
 
     public function create(Project $project): void
     {
-        $project->setCreatedAt(new \DateTimeImmutable());
-        $project->setUpdatedAt(new \DateTimeImmutable());
+        $project->setCreatedAt(new \DateTimeImmutable())
+            ->setUpdatedAt(new \DateTimeImmutable())
+            ->setCreatedBy($this->security->getUser())
+            ->setUpdatedBy($this->security->getUser())
+            ->setClass($this->security->getUser()->getClass())
+        ;
+
+        $ms = $this->defaultService->getDefaultMilestones();
+
+        foreach ($ms as $milestone) {
+            $project->addMilestone($milestone);
+        }
+
         $this->em->persist($project);
         $this->em->flush();
     }
@@ -26,6 +39,12 @@ class ProjectService
     public function update(Project $project): void
     {
         $project->setUpdatedAt(new \DateTimeImmutable());
+        $this->em->flush();
+    }
+
+    public function delete(Project $project): void
+    {
+        $this->em->remove($project);
         $this->em->flush();
     }
 

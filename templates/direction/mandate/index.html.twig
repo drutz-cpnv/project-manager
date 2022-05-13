@@ -1,0 +1,43 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Liste des mandats{% endblock %}
+
+{% block body %}
+    <table class="table table-hover">
+        <thead>
+        <tr>
+            <th scope="col">#</th>
+            <th scope="col">Titre</th>
+            <th scope="col">Client</th>
+            <th scope="col">Statut</th>
+            <th scope="col">Date désirée</th>
+            <th scope="col">Date de création</th>
+            <th scope="col" class="text-end">Action</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for mandate in mandates %}
+            <tr>
+                <th scope="row">{{ mandate.uid | strpad(3, '0') }}</th>
+                <td>{{ mandate.title }}</td>
+                <td>{{ mandate.client }}</td>
+                <td><span class="badge bg-light text-dark">{{ mandate.stateLabel }}</span></td>
+                <td>{{ mandate.desiredDate | date("d.m.Y") }}</td>
+                <td>{{ mandate.createdAt | date("d.m.Y H:i") }}</td>
+                <td class="d-flex justify-content-end gap-2">
+                        {#<a href="{{path('direje.mandate.show', {id: mandate.id})}}" class="btn btn-sm btn-outline-primary">Afficher</a>#}
+                    {% if not mandate.isDelegated %}{{include('direction/mandate/_accept_form.html.twig')}}{% endif %}
+                    <div class="dropdown">
+                        <button class="btn btn-sm btn-link" type="button" id="dropdownMenuButton{{ mandate.id }}" data-bs-toggle="dropdown" aria-expanded="false">
+                            {{ feather('more-vertical') }}
+                        </button>
+                        <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton{{ mandate.id }}">
+                            <li><a class="dropdown-item" href="{{path('direje.mandate.show', {id: mandate.id})}}">Afficher</a></li>
+                        </ul>
+                    </div>
+                </td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}

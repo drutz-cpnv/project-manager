@@ -55,6 +55,17 @@ class PersonRepository extends ServiceEntityRepository
             ;
     }
 
+    public function findAllCoach()
+    {
+        return $this->createQueryBuilder('p')
+            ->andWhere('p.canCoach = 1')
+            ->orderBy('p.lastname', 'ASC')
+            ->getQuery()
+            ->getResult()
+
+            ;
+    }
+
     // /**
     //  * @return Person[] Returns an array of Person objects
     //  */

@@ -11,7 +11,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
-#[Route("/admin/mandat", name: "admin.mandate.")]
+#[Route("/panel/admin/mandat", name: "admin.mandate.")]
 class MandateController extends BaseController
 {
 
@@ -47,6 +47,33 @@ class MandateController extends BaseController
             'menu' => "admin.mandate",
             'form' => $form,
         ]);
+    }
+
+    #[Route("/{id}", name: "show")]
+    public function show(Mandate $mandate): Response
+    {
+        return $this->render('admin/mandate/show.html.twig', [
+            'menu' => 'admin.mandate',
+            'mandate' => $mandate
+        ]);
+    }
+
+    #[Route("/{id}/accept", name: "copil.accept", methods: ["POST"])]
+    public function accept(Mandate $mandate, Request $request): Response
+    {
+        if ($this->isCsrfTokenValid('copilAccept'.$mandate->getId(), $request->request->get('_token'))) {
+            $this->mandateService->acceptCOPIL($mandate);
+        }
+        return $this->redirectToRoute('admin.mandate.show', ['id' => $mandate->getId()], Response::HTTP_SEE_OTHER);
+    }
+
+    #[Route("/{id}/refuse", name: "copil.refuse", methods: ["POST"])]
+    public function refuse(Mandate $mandate, Request $request): Response
+    {
+        if ($this->isCsrfTokenValid('copilRefuse'.$mandate->getId(), $request->request->get('_token'))) {
+            $this->mandateService->refuse($mandate);
+        }
+        return $this->redirectToRoute('admin.mandate.show', ['id' => $mandate->getId()], Response::HTTP_SEE_OTHER);
     }
 
 

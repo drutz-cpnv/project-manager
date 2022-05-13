@@ -2,11 +2,15 @@
 
 namespace App\Services;
 
+use App\Entity\Classe;
+use App\Entity\Milestone;
 use App\Entity\Person;
 use App\Entity\PersonType;
+use App\Entity\Project;
 use App\Entity\Role;
 use App\Services\Intranet\IntranetClient;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Component\Security\Core\Security;
 
 class DefaultService
 {
@@ -17,6 +21,7 @@ class DefaultService
         private EntityManagerInterface $entityManager,
         private IntranetClient $intranetClient,
         private PersonFactoryService $personFactory,
+        private Security $security,
      )
     {
     }
@@ -26,6 +31,7 @@ class DefaultService
         $this->personTypes();
         $this->students();
         $this->teachers();
+        $this->classes();
 
         if(empty($this->toPersit)) return;
 
@@ -41,10 +47,25 @@ class DefaultService
         $default = [];
 
         foreach ($this->intranetClient->findAllStudents() as $student) {
-            $default[] = $this->personFactory->create($student, 'student');
+            $default[] = $this->personFactory->create($student);
         }
 
         $this->defineToPersist($default, Person::class);
+
+    }
+
+    public function classes()
+    {
+        $default = [];
+
+        foreach ($this->intranetClient->findAllClasses() as $class) {
+            $default[] = (new Classe())
+                ->setName($class->name)
+                ->setSlug($class->friendly_id)
+            ;
+        }
+
+        $this->defineToPersist($default, Classe::class);
 
     }
 
@@ -53,7 +74,7 @@ class DefaultService
         $default = [];
 
         foreach ($this->intranetClient->findAllTeachers() as $teacher) {
-            $default[] = $this->personFactory->create($teacher, 'teacher');
+            $default[] = $this->personFactory->create($teacher);
         }
 
         $this->defineToPersist($default, Person::class);
@@ -88,6 +109,34 @@ class DefaultService
 
         $this->defineToPersist($default, PersonType::class);
 
+    }
+
+    /**
+     * @return Milestone[]
+     */
+    public function getDefaultMilestones(): array
+    {
+        return [
+            (new Milestone())
+                ->setName('Premier entretien avec le client')
+                ->setDescription("Cet entretien permettera aux parties de clarifier leurs intentions. Ainsi qu'à poser les bases du projet."),
+            (new Milestone())
+                ->setName('Cahier des charges')
+                ->setDescription("Création et validation du cahier des charges par les deux parties. Un template est disponible dans l'équipe Teams."),
+            (new Milestone())
+                ->setName('Liste des tâches et planification')
+                ->setDescription("Création de la liste comportant l'ensemble des tâches qui devront êtres achevée avant d'obtenir le résultat définit dans le cahier des charges."),
+            (new Milestone())
+                ->setName('Prototypes')
+                ->setDescription("La phase de prototypage, permet d'avoir un aperçu du ou des livrable(s)."),
+            (new Milestone())
+                ->setName('Bon à tirer')
+                ->setDescription("Phase de production du produit final sur les bases du cahier des charges et sur les différents retour sur les prototypes."),
+            (new Milestone())
+                ->setName('Livrable final')
+                ->setIsFinal(true)
+                ->setDescription("Cette dernière phase marque la fin du projet et la facturation complète du projet au client."),
+        ];
     }
 
     public function defineToPersist($default, string $class)

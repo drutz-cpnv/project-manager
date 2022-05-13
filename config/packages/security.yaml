@@ -45,7 +45,7 @@ security:
 
     role_hierarchy:
         ROLE_BASE_USER:     ROLE_USER
-        ROLE_CLIENT:       ROLE_BASE_USER
+        ROLE_CLIENT:        ROLE_BASE_USER
         ROLE_STUDENT:       ROLE_BASE_USER
         ROLE_DIRECTOR:      ROLE_STUDENT
         ROLE_TEACHER:       ROLE_BASE_USER

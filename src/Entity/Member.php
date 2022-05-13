@@ -23,15 +23,15 @@ class Member
     #[ORM\Column(type: 'boolean')]
     private $isProjectManager;
 
-    #[ORM\ManyToOne(targetEntity: Team::class, inversedBy: 'members')]
-    #[ORM\JoinColumn(nullable: false)]
-    private $team;
-
     #[ORM\Column(type: 'datetime_immutable')]
     private $createdAt;
 
     #[ORM\Column(type: 'datetime_immutable')]
     private $updatedAt;
+
+    #[ORM\ManyToOne(targetEntity: Project::class, inversedBy: 'members')]
+    #[ORM\JoinColumn(nullable: false)]
+    private $project;
 
     public function getId(): ?int
     {
@@ -46,18 +46,6 @@ class Member
     public function setUser(?User $user): self
     {
         $this->user = $user;
-
-        return $this;
-    }
-
-    public function getTeam(): ?Team
-    {
-        return $this->team;
-    }
-
-    public function setTeam(?Team $team): self
-    {
-        $this->team = $team;
 
         return $this;
     }
@@ -91,7 +79,7 @@ class Member
         return $this->isProjectManager;
     }
 
-    public function setProjectManager(bool $projectManager): self
+    public function setIsProjectManager(bool $projectManager): self
     {
         $this->isProjectManager = $projectManager;
 
@@ -115,13 +103,23 @@ class Member
         return $this->isProjectManager ? 'Chef de projet' : 'Membre';
     }
 
-    public function getProject()
+    /**
+     * @return Project
+     */
+    public function getProject(): Project
     {
-        return $this->getTeam()->getProject();
+        return $this->project;
     }
 
     public function __toString(): string
     {
         return $this->getUser();
+    }
+
+    public function setProject(?Project $project): self
+    {
+        $this->project = $project;
+
+        return $this;
     }
 }

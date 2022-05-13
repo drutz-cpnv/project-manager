@@ -1,0 +1,4 @@
+<form method="post" class="form-button" action="{{ path('direje.mandate.refuse', {'id': mandate.id}) }}">
+    <input type="hidden" name="_token" value="{{ csrf_token('direjeRefuse' ~ mandate.id) }}">
+    <button type="submit" class="btn btn-outline-danger btn-sm">Refuser</button>
+</form>

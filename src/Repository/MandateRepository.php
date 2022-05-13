@@ -45,6 +45,27 @@ class MandateRepository extends ServiceEntityRepository
         }
     }
 
+    /**
+     * @return Mandate[]
+     */
+    public function findForDireJe(): array
+    {
+        return $this->createQueryBuilder('m')
+            ->andWhere('m.state > 1')
+            ->orderBy('m.uid', 'ASC')
+            ->getQuery()
+            ->getResult()
+            ;
+    }
+
+    public function reset()
+    {
+        $tableName = $this->getClassMetadata()->getTableName();
+        $connection = $this->getEntityManager()->getConnection();
+        $connection->exec("ALTER TABLE `". $tableName ."` AUTO_INCREMENT = 1");
+    }
+
+
     // /**
     //  * @return Mandate[] Returns an array of Mandate objects
     //  */

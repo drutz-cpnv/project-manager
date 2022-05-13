@@ -1,0 +1,40 @@
+{% extends 'base.html.twig' %}
+
+{% set hasNavTabs = true %}
+
+{% block title %}{{ project.uid }} — {{ project.title }}{% endblock %}
+
+{% block navTabs %}
+    {{ include('partials/_project_nav_header.html.twig') }}
+{% endblock %}
+
+{% block body %}
+    <div class="w-75 mx-auto mt-5">
+        <h2 class="h1 mb-5">Jalons</h2>
+        <div class="list-group">
+            {% for milestone in project.milestones %}
+            <div class="list-group-item d-flex justify-content-between align-items-start">
+                {% if milestone.finished %}
+                    <span class="text-success">
+                        {{ feather('check-circle') }}
+                    </span>
+                {% else %}
+                    <span class="text-warning">
+                        {{ feather('circle') }}
+                    </span>
+                {% endif %}
+                <span class="ms-2 me-auto">
+                    <span class="fw-bold">{{ milestone.name }}</span><br>
+                    <span class="text-muted">{{ milestone.stateLabel }} — Modifier le {{ milestone.updatedAt | date("d.m.Y à H:i") }}</span><br>
+                    <span>{{ milestone.description }}</span>
+                </span>
+                {% if is_granted('SIMPLE_EDIT', project) %}
+                    <a href="{{ path('project.edit.milestones', {id: project.id, milestoneID: milestone.id}) }}" class="btn btn-light text-dark">Modifier</a>
+                {% endif %}
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+{% endblock %}
+
+

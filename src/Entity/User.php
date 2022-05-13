@@ -55,8 +55,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\OneToMany(mappedBy: 'user', targetEntity: Member::class)]
     private $memberships;
 
-    #[ORM\OneToMany(mappedBy: 'coach', targetEntity: Project::class)]
-    private $supervisedProjects;
+    #[ORM\OneToMany(mappedBy: 'createdBy', targetEntity: File::class)]
+    private $files;
+
 
     public function __construct()
     {
@@ -66,7 +67,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         $this->createdProjects = new ArrayCollection();
         $this->updatedProjects = new ArrayCollection();
         $this->memberships = new ArrayCollection();
-        $this->supervisedProjects = new ArrayCollection();
+        $this->files = new ArrayCollection();
     }
 
     /**
@@ -336,33 +337,39 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $projects;
     }
 
-    /**
-     * @return Collection<int, Project>
-     */
-    public function getSupervisedProjects(): Collection
+    public function getClass(): Classe
     {
-        return $this->supervisedProjects;
+        return $this->getPerson()->getClass();
     }
 
-    public function addSupervisedProject(Project $supervisedProject): self
+    /**
+     * @return Collection<int, File>
+     */
+    public function getFiles(): Collection
     {
-        if (!$this->supervisedProjects->contains($supervisedProject)) {
-            $this->supervisedProjects[] = $supervisedProject;
-            $supervisedProject->setCoach($this);
+        return $this->files;
+    }
+
+    public function addFile(File $file): self
+    {
+        if (!$this->files->contains($file)) {
+            $this->files[] = $file;
+            $file->setCreatedBy($this);
         }
 
         return $this;
     }
 
-    public function removeSupervisedProject(Project $supervisedProject): self
+    public function removeFile(File $file): self
     {
-        if ($this->supervisedProjects->removeElement($supervisedProject)) {
+        if ($this->files->removeElement($file)) {
             // set the owning side to null (unless already changed)
-            if ($supervisedProject->getCoach() === $this) {
-                $supervisedProject->setCoach(null);
+            if ($file->getCreatedBy() === $this) {
+                $file->setCreatedBy(null);
             }
         }
 
         return $this;
     }
+
 }

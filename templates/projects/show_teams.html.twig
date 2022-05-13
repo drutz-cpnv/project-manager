@@ -1,0 +1,43 @@
+{% extends 'base.html.twig' %}
+
+{% set hasNavTabs = true %}
+
+{% block title %}{{ project.uid }} — {{ project.title }}{% endblock %}
+
+{% block navTabs %}
+    {{ include('partials/_project_nav_header.html.twig') }}
+{% endblock %}
+
+{% block body %}
+    <div class="w-75 mx-auto mt-5">
+        <div class="d-flex justify-content-between align-items-center mb-5">
+            <h2 class="h1">Équipe</h2>
+            {% if is_granted('EDIT', project) %}
+                <a href="{{ path('project.edit.add_member', {id: project.id})}}" class="btn btn-light text-dark">Ajouter un membre</a>
+            {% endif %}
+        </div>
+        <div class="list-group">
+            {% for member in project.members %}
+                <div class="list-group-item d-flex justify-content-between align-items-center">
+                    {% if member.isProjectManager %}
+                        <span class="text-warning" data-bs-toggle="tooltip" data-bs-placement="top" title="Chef de projet">
+                            {{ feather('zap') }}
+                        </span>
+                    {% endif %}
+                    <span class="ms-2 me-auto">
+                        <span class="fw-bold fs-5">{{ member }}</span><br>
+                        {% if member.title is defined %}<span class="text-muted">{{ member.title }}</span>{% endif %}
+                    </span>
+                    {% if is_granted('EDIT', project) %}
+                        <div class="hstack">
+                            <a href="{{ path('project.edit.edit_member', {id: member.id}) }}" class="btn btn-sm btn-light text-dark">Modifier</a>
+                            {{ include('projects/_delete_member_form.html.twig') }}
+                        </div>
+                    {% endif %}
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+{% endblock %}
+
+

@@ -6,10 +6,38 @@ use App\Repository\ProjectRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Security\Core\User\UserInterface;
 
 #[ORM\Entity(repositoryClass: ProjectRepository::class)]
 class Project
 {
+
+    public const STATE_IN_PROGRESS = 1;
+    public const STATE_STANDBY = 2;
+    public const STATE_CANCELED = 3;
+    public const STATE_FINISHED = 4;
+
+    public const STATE_ICONS = [
+        self::STATE_IN_PROGRESS => 'flash',
+        self::STATE_STANDBY => 'pause-circle',
+        self::STATE_CANCELED => 'x-octagon',
+        self::STATE_FINISHED => 'check-circle'
+    ];
+
+    public const STATE_COLOR = [
+        self::STATE_IN_PROGRESS => 'text-warning',
+        self::STATE_STANDBY => 'text-secondary',
+        self::STATE_CANCELED => 'text-muted',
+        self::STATE_FINISHED => 'text-primary'
+    ];
+
+    public const STATE_LABEL = [
+        1 => "En cours",
+        2 => "En pause",
+        3 => "Annulé",
+        4 => "Terminé",
+     ];
+
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: 'integer')]
@@ -27,27 +55,63 @@ class Project
     #[ORM\ManyToOne(targetEntity: User::class, inversedBy: 'updatedProjects')]
     private $updatedBy;
 
-    #[ORM\OneToMany(mappedBy: 'project', targetEntity: Milestone::class, orphanRemoval: true)]
+    #[ORM\OneToMany(mappedBy: 'project', targetEntity: Milestone::class, cascade: ['persist'], orphanRemoval: true)]
     private $milestones;
-
-    #[ORM\OneToMany(mappedBy: 'project', targetEntity: Team::class, orphanRemoval: true)]
-    private $teams;
-
-    #[ORM\ManyToOne(targetEntity: User::class, inversedBy: 'supervisedProjects')]
-    private $coach;
 
     #[ORM\ManyToOne(targetEntity: Mandate::class, inversedBy: 'projects')]
     private $mandate;
 
+    #[ORM\ManyToOne(targetEntity: Person::class, inversedBy: 'supervisedProjects')]
+    private $coach;
+
+    #[ORM\Column(type: 'date', nullable: true)]
+    private $specificationsEndDate = null;
+
+    #[ORM\Column(type: 'integer', nullable: true)]
+    private $state = self::STATE_IN_PROGRESS;
+
+    #[ORM\ManyToOne(targetEntity: Classe::class, inversedBy: 'projects')]
+    private $class;
+
+    #[ORM\OneToMany(mappedBy: 'project', targetEntity: Member::class, orphanRemoval: true)]
+    private $members;
+
     public function __construct()
     {
+        $this->setCreatedAt(new \DateTimeImmutable());
+        $this->setUpdatedAt(new \DateTimeImmutable());
         $this->milestones = new ArrayCollection();
-        $this->teams = new ArrayCollection();
+        $this->members = new ArrayCollection();
     }
 
     public function getId(): ?int
     {
         return $this->id;
+    }
+
+    public function getStatus()
+    {
+        return self::STATE_LABEL[$this->getState()];
+    }
+
+    public function getUid(): string
+    {
+        return str_pad(0, 3, (string)$this->getMandate()->getUid(), STR_PAD_LEFT);
+    }
+
+    public function getClient()
+    {
+        return $this->getMandate()->getClient();
+    }
+
+    public function getDescription()
+    {
+        return $this->getMandate()->getDescription();
+    }
+
+    public function getTitle()
+    {
+        return $this->getMandate()->getTitle();
     }
 
     public function getCreatedAt(): ?\DateTimeImmutable
@@ -67,7 +131,7 @@ class Project
         return $this->createdBy;
     }
 
-    public function setCreatedBy(?User $createdBy): self
+    public function setCreatedBy(User|UserInterface $createdBy): self
     {
         $this->createdBy = $createdBy;
 
@@ -91,7 +155,7 @@ class Project
         return $this->updatedBy;
     }
 
-    public function setUpdatedBy(?User $updatedBy): self
+    public function setUpdatedBy(User|UserInterface $updatedBy): self
     {
         $this->updatedBy = $updatedBy;
 
@@ -128,36 +192,6 @@ class Project
         return $this;
     }
 
-    /**
-     * @return Collection<int, Team>
-     */
-    public function getTeams(): Collection
-    {
-        return $this->teams;
-    }
-
-    public function addTeam(Team $team): self
-    {
-        if (!$this->teams->contains($team)) {
-            $this->teams[] = $team;
-            $team->setProject($this);
-        }
-
-        return $this;
-    }
-
-    public function removeTeam(Team $team): self
-    {
-        if ($this->teams->removeElement($team)) {
-            // set the owning side to null (unless already changed)
-            if ($team->getProject() === $this) {
-                $team->setProject(null);
-            }
-        }
-
-        return $this;
-    }
-
     public function getCoach(): ?User
     {
         return $this->coach;
@@ -181,4 +215,96 @@ class Project
 
         return $this;
     }
+
+    public function getSpecificationsEndDate(): ?\DateTimeInterface
+    {
+        return $this->specificationsEndDate;
+    }
+
+    public function setSpecificationsEndDate(\DateTimeInterface $specificationsEndDate): self
+    {
+        $this->specificationsEndDate = $specificationsEndDate;
+
+        return $this;
+    }
+
+
+    public function getState(): ?int
+    {
+        return $this->state;
+    }
+
+    public function setState(?int $state): self
+    {
+        $this->state = $state;
+
+        return $this;
+    }
+
+    public function getClass(): ?Classe
+    {
+        return $this->class;
+    }
+
+    public function setClass(?Classe $class): self
+    {
+        $this->class = $class;
+
+        return $this;
+    }
+
+    public function userIsMember(User $user): bool
+    {
+        $o = false;
+        foreach ($this->getMembers() as $member) {
+            if (!$o && $member->getUser() === $user) {
+                $o = true;
+            }
+        }
+        return $o;
+    }
+
+    public function getManager(): ?Member
+    {
+        foreach ($this->getMembers() as $member) {
+            if($member->getIsProjectManager()) return $member;
+        }
+        return null;
+    }
+
+    /**
+     * @return Collection<int, Member>
+     */
+    public function getMembers(): Collection
+    {
+        return $this->members;
+    }
+
+    public function addMember(Member $member): self
+    {
+        if (!$this->members->contains($member)) {
+            $this->members[] = $member;
+            $member->setProject($this);
+        }
+
+        return $this;
+    }
+
+    public function removeMember(Member $member): self
+    {
+        if ($this->members->removeElement($member)) {
+            // set the owning side to null (unless already changed)
+            if ($member->getProject() === $this) {
+                $member->setProject(null);
+            }
+        }
+
+        return $this;
+    }
+
+    public function __toString(): string
+    {
+        return $this->getTitle();
+    }
+
 }

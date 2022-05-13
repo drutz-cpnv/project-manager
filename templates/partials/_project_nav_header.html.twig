@@ -1,0 +1,14 @@
+<ul class="nav nav-tabs">
+    <li class="nav-item">
+        <a class="nav-link" href="{{ path('project.show', {id: project.id}) }}" {{ tabActive('tab1') }}>Informations</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link" href="{{ path('project.show.milestones', {id: project.id}) }}"  {{ tabActive('tab3') }}>Jalons</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link" href="{{ path('project.show.teams', {id: project.id}) }}" {{ tabActive('tab2') }}>Équipe</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link" href="{{ path('project.settings', {id: project.id}) }}" {{ tabActive('tab4') }}>Paramètres</a>
+    </li>
+</ul>

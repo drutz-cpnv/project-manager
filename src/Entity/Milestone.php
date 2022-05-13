@@ -8,6 +8,23 @@ use Doctrine\ORM\Mapping as ORM;
 #[ORM\Entity(repositoryClass: MilestoneRepository::class)]
 class Milestone
 {
+
+    public const STATE_TO_PLANE = 1;
+    public const STATE_DONE = 2;
+    public const STATE_IN_PROGRESS = 3;
+    public const STATE_FORWARDED = 4;
+    public const STATE_SIGNED = 5;
+    public const STATE_TO_DO = 6;
+
+    public const STATE_LABEL = [
+        1 => "À planifier",
+        2 => "Fait",
+        3 => "En cours",
+        4 => "Transmis",
+        5 => "Signé",
+        6 => "À faire",
+    ];
+
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: 'integer')]
@@ -16,7 +33,7 @@ class Milestone
     #[ORM\Column(type: 'string', length: 255)]
     private $name;
 
-    #[ORM\Column(type: 'date_immutable')]
+    #[ORM\Column(type: 'date_immutable', nullable: true)]
     private $date;
 
     #[ORM\Column(type: 'text', nullable: true)]
@@ -41,6 +58,12 @@ class Milestone
     #[ORM\JoinColumn(nullable: false)]
     private $project;
 
+    #[ORM\Column(type: 'integer')]
+    private $state = self::STATE_TO_DO;
+
+    #[ORM\Column(type: 'boolean')]
+    private $finished = false;
+
     public function __construct()
     {
         $this->setIsFinal(false);
@@ -51,6 +74,11 @@ class Milestone
     public function getId(): ?int
     {
         return $this->id;
+    }
+
+    public function getStateLabel(): string
+    {
+        return self::STATE_LABEL[$this->getState()];
     }
 
     public function getName(): ?string
@@ -70,8 +98,11 @@ class Milestone
         return $this->date;
     }
 
-    public function setDate(\DateTimeImmutable $date): self
+    public function setDate($date): self
     {
+        if($date instanceof \DateTime) {
+            $date = \DateTimeImmutable::createFromMutable($date);
+        }
         $this->date = $date;
 
         return $this;
@@ -106,7 +137,7 @@ class Milestone
         return $this->createdBy;
     }
 
-    public function setCreatedBy(?User $createdBy): self
+    public function setCreatedBy($createdBy): self
     {
         $this->createdBy = $createdBy;
 
@@ -130,7 +161,7 @@ class Milestone
         return $this->updatedBy;
     }
 
-    public function setUpdatedBy(?User $updatedBy): self
+    public function setUpdatedBy($updatedBy): self
     {
         $this->updatedBy = $updatedBy;
 
@@ -162,6 +193,30 @@ class Milestone
     public function setProject(?Project $project): self
     {
         $this->project = $project;
+
+        return $this;
+    }
+
+    public function getState(): ?int
+    {
+        return $this->state;
+    }
+
+    public function setState(int $state): self
+    {
+        $this->state = $state;
+
+        return $this;
+    }
+
+    public function getFinished(): ?bool
+    {
+        return $this->finished;
+    }
+
+    public function setFinished(bool $finished): self
+    {
+        $this->finished = $finished;
 
         return $this;
     }

@@ -1,0 +1,4 @@
+<form method="post" class="form-button" action="{{ path('project.member.delete', {'id': member.id}) }}">
+    <input type="hidden" name="_token" value="{{ csrf_token('memberDelete' ~ member.id) }}">
+    <button type="submit" class="btn btn-outline-danger btn-sm">{{ feather('trash') }}</button>
+</form>

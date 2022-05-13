@@ -1,0 +1,23 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Liste des projets{% endblock %}
+
+{% block body %}
+    <div class="row">
+        {% for project in projects %}
+        <div class="col-sm-3">
+            <div class="card position-relative">
+                <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+                    99+
+                    <span class="visually-hidden">unread messages</span>
+                </span>
+                <div class="card-body">
+                    <h5 class="card-title">{{ project.uid }} — {{ project.title }}</h5>
+                    <h6 class="card-subtitle mb-2 text-muted">{{ project.client }}</h6>
+                    <a href="{{ path('project.show', {id: project.id}) }}" class="btn btn-primary">Afficher</a>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+{% endblock %}

@@ -2,6 +2,10 @@
 
 {% block title %}Mandats{% endblock %}
 
+{%block headerBtn%}
+    <a href="{{path('admin.mandate.new')}}" class="btn btn-secondary">Ajouter un mandat manuellement</a>
+{%endblock%}
+
 {% block body %}
     <table class="table table-hover">
         <thead>
@@ -9,6 +13,7 @@
             <th scope="col">#</th>
             <th scope="col">Titre</th>
             <th scope="col">Client</th>
+            <th scope="col">Statut</th>
             <th scope="col">Date désirée</th>
             <th scope="col">Date de création</th>
             <th scope="col" class="text-end">Action</th>
@@ -17,20 +22,19 @@
         <tbody>
         {% for mandate in mandates %}
         <tr>
-            <th scope="row">{{ mandate.uid }}</th>
+            <th scope="row">{{ mandate.uid | strpad(3, '0') }}</th>
             <td>{{ mandate.title }}</td>
             <td>{{ mandate.client }}</td>
+            <td><span class="badge bg-light text-dark">{{ mandate.stateLabel }}</span></td>
             <td>{{ mandate.desiredDate | date("d.m.Y") }}</td>
             <td>{{ mandate.createdAt | date("d.m.Y H:i") }}</td>
-            <td class="d-flex justify-content-end">
+            <td class="d-flex justify-content-end gap-2">
+                <a href="{{path('admin.mandate.show', {id: mandate.id})}}" class="btn btn-sm btn-outline-primary">Afficher</a>
                 <div class="dropdown">
-                    <button class="btn btn-sm" type="button" id="dropdownMenuButton{{ mandate.id }}" data-bs-toggle="dropdown" aria-expanded="false">
+                    <button class="btn btn-sm btn-link" type="button" id="dropdownMenuButton{{ mandate.id }}" data-bs-toggle="dropdown" aria-expanded="false">
                         {{ feather('more-vertical') }}
                     </button>
                     <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton{{ mandate.id }}">
-                        <li><a class="dropdown-item" href="#">Action</a></li>
-                        <li><a class="dropdown-item" href="#">Another action</a></li>
-                        <li><a class="dropdown-item" href="#">Something else here</a></li>
                     </ul>
                 </div>
             </td>
