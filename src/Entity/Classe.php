@@ -27,6 +27,12 @@ class Classe
     #[ORM\OneToMany(mappedBy: 'class', targetEntity: Person::class)]
     private $students;
 
+    #[ORM\OneToOne(inversedBy: 'parent', targetEntity: self::class, cascade: ['persist', 'remove'])]
+    private $children;
+
+    #[ORM\OneToOne(mappedBy: 'children', targetEntity: self::class)]
+    private $parent;
+
     public function __construct()
     {
         $this->projects = new ArrayCollection();
@@ -122,8 +128,44 @@ class Classe
         return $this;
     }
 
+    public function getAllStudents(): ArrayCollection
+    {
+        $output = new ArrayCollection();
+        if(!is_null($this->getChildren())) {
+            foreach ($this->getChildren()->getStudents() as $student) {
+                $output->add($student);
+            }
+        }
+
+        foreach ($this->getStudents() as $student) {
+            $output->add($student);
+        }
+
+        return $output;
+    }
+
     public function __toString(): string
     {
         return $this->getName();
+    }
+
+    public function getChildren(): ?self
+    {
+        return $this->children;
+    }
+
+    public function setChildren(?self $children): self
+    {
+        $this->children = $children;
+
+        return $this;
+    }
+
+    /**
+     * @return Classe|null
+     */
+    public function getParent(): ?Classe
+    {
+        return $this->parent;
     }
 }

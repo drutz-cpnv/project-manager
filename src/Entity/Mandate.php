@@ -7,6 +7,8 @@ use DateTime;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
+use Vich\UploaderBundle\Mapping\Annotation as Vich;
 
 #[ORM\Entity(repositoryClass: MandateRepository::class)]
 class Mandate
@@ -61,9 +63,28 @@ class Mandate
     #[ORM\Column(type: 'integer')]
     private $state = 1;
 
+    #[ORM\OneToMany(mappedBy: 'mandate', targetEntity: File::class, cascade: ["persist"])]
+    private $files;
+
+    #[Assert\All([
+        new Assert\File(mimeTypes: [
+            "application/pdf",
+            "application/msword",
+            "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+            "application/vnd.ms-excel",
+            "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+            "application/zip",
+            "application/vnd.ms-powerpoint",
+            "application/vnd.openxmlformats-officedocument.presentationml.presentation",
+        ])
+    ])]
+    private $documentFiles;
+
+
     public function __construct()
     {
         $this->projects = new ArrayCollection();
+        $this->files = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -208,6 +229,59 @@ class Mandate
     private function stateText(int $state): string
     {
         return $this->stateLabel[$state];
+    }
+
+    /**
+     * @return Collection<int, File>
+     */
+    public function getFiles(): Collection
+    {
+        return $this->files;
+    }
+
+    public function addFile(File $files): self
+    {
+        if (!$this->files->contains($files)) {
+            $this->files[] = $files;
+            $files->setMandate($this);
+        }
+
+        return $this;
+    }
+
+    public function removeFile(File $files): self
+    {
+        if ($this->files->removeElement($files)) {
+            // set the owning side to null (unless already changed)
+            if ($files->getMandate() === $this) {
+                $files->setMandate(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getDocumentFiles()
+    {
+        return $this->documentFiles;
+    }
+
+    /**
+     * @param mixed $files
+     * @return Mandate
+     */
+    public function setDocumentFiles($files): self
+    {
+        foreach($files as $file) {
+            $newFile = new File();
+            $newFile->setFile($file);
+            $this->addFile($newFile);
+        }
+        $this->documentFiles = $files;
+        return $this;
     }
 
 }

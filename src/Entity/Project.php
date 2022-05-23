@@ -76,12 +76,16 @@ class Project
     #[ORM\OneToMany(mappedBy: 'project', targetEntity: Member::class, orphanRemoval: true)]
     private $members;
 
+    #[ORM\OneToMany(mappedBy: 'project', targetEntity: File::class)]
+    private $files;
+
     public function __construct()
     {
         $this->setCreatedAt(new \DateTimeImmutable());
         $this->setUpdatedAt(new \DateTimeImmutable());
         $this->milestones = new ArrayCollection();
         $this->members = new ArrayCollection();
+        $this->files = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -96,7 +100,7 @@ class Project
 
     public function getUid(): string
     {
-        return str_pad(0, 3, (string)$this->getMandate()->getUid(), STR_PAD_LEFT);
+        return $this->getMandate()->getUid();
     }
 
     public function getClient()
@@ -192,12 +196,12 @@ class Project
         return $this;
     }
 
-    public function getCoach(): ?User
+    public function getCoach(): ?Person
     {
         return $this->coach;
     }
 
-    public function setCoach(?User $coach): self
+    public function setCoach(?Person $coach): self
     {
         $this->coach = $coach;
 
@@ -305,6 +309,36 @@ class Project
     public function __toString(): string
     {
         return $this->getTitle();
+    }
+
+    /**
+     * @return Collection<int, File>
+     */
+    public function getFiles(): Collection
+    {
+        return $this->files;
+    }
+
+    public function addFile(File $file): self
+    {
+        if (!$this->files->contains($file)) {
+            $this->files[] = $file;
+            $file->setProject($this);
+        }
+
+        return $this;
+    }
+
+    public function removeFile(File $file): self
+    {
+        if ($this->files->removeElement($file)) {
+            // set the owning side to null (unless already changed)
+            if ($file->getProject() === $this) {
+                $file->setProject(null);
+            }
+        }
+
+        return $this;
     }
 
 }

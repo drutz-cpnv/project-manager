@@ -86,6 +86,7 @@ class MandateService
         }
 
         $mandate->setClient($client);
+
         $this->create($mandate);
     }
 

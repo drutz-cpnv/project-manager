@@ -33,6 +33,9 @@
                         </button>
                         <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton{{ mandate.id }}">
                             <li><a class="dropdown-item" href="{{path('direje.mandate.show', {id: mandate.id})}}">Afficher</a></li>
+                            {% if not mandate.projects.empty %}
+                                <li><a class="dropdown-item" href="{{path('project.show', {id: mandate.projects.first.id})}}">Afficher le projet</a></li>
+                            {% endif %}
                         </ul>
                     </div>
                 </td>

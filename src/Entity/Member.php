@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\MemberRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: MemberRepository::class)]
@@ -32,6 +34,14 @@ class Member
     #[ORM\ManyToOne(targetEntity: Project::class, inversedBy: 'members')]
     #[ORM\JoinColumn(nullable: false)]
     private $project;
+
+    #[ORM\OneToMany(mappedBy: 'student', targetEntity: PersonalEvaluation::class)]
+    private $evaluations;
+
+    public function __construct()
+    {
+        $this->evaluations = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -119,6 +129,36 @@ class Member
     public function setProject(?Project $project): self
     {
         $this->project = $project;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, PersonalEvaluation>
+     */
+    public function getEvaluations(): Collection
+    {
+        return $this->evaluations;
+    }
+
+    public function addEvaluation(PersonalEvaluation $evaluation): self
+    {
+        if (!$this->evaluations->contains($evaluation)) {
+            $this->evaluations[] = $evaluation;
+            $evaluation->setStudent($this);
+        }
+
+        return $this;
+    }
+
+    public function removeEvaluation(PersonalEvaluation $evaluation): self
+    {
+        if ($this->evaluations->removeElement($evaluation)) {
+            // set the owning side to null (unless already changed)
+            if ($evaluation->getStudent() === $this) {
+                $evaluation->setStudent(null);
+            }
+        }
 
         return $this;
     }

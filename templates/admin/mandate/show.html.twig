@@ -4,8 +4,11 @@
 
 {% block headerBtn %}
     <div class="d-flex gap-2">
+        {% if mandate.state is not same as(3) or mandate.state is not same as(4) %}
         {{include('admin/mandate/_accept_form.html.twig')}}
         {{include('admin/mandate/_refuse_form.html.twig')}}
+        {% else %}
+        {% endif %}
     </div>
 {% endblock %}
 

@@ -9,6 +9,12 @@
         <a class="nav-link" href="{{ path('project.show.teams', {id: project.id}) }}" {{ tabActive('tab2') }}>Équipe</a>
     </li>
     <li class="nav-item">
+        <a class="nav-link" href="{{ path('project.show.files', {id: project.id}) }}" {{ tabActive('tab5') }}>Fichiers</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link" href="{{ path('project.notes', {'id': project.id}) }}" {{ tabActive('tab6') }}>Évaluations</a>
+    </li>
+    <li class="nav-item">
         <a class="nav-link" href="{{ path('project.settings', {id: project.id}) }}" {{ tabActive('tab4') }}>Paramètres</a>
     </li>
 </ul>

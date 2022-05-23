@@ -6,6 +6,7 @@ use App\Entity\Person;
 use App\Entity\User;
 use App\Form\RegistrationFormType;
 use App\Security\EmailVerifier;
+use App\Services\UserService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bridge\Twig\Mime\TemplatedEmail;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -22,7 +23,7 @@ use SymfonyCasts\Bundle\VerifyEmail\Exception\VerifyEmailExceptionInterface;
 class SecurityController extends BaseController
 {
 
-    public function __construct(private EmailVerifier $emailVerifier)
+    public function __construct(private EmailVerifier $emailVerifier, private UserService $userService)
     {
     }
 
@@ -51,6 +52,15 @@ class SecurityController extends BaseController
             );
 
             $person->setUser($user);
+
+            $userType = $person->getType()->getSlug();
+            if($userType === "student") {
+                $this->userService->addRole('ROLE_STUDENT', $user);
+            } elseif ($userType === "teacher") {
+                $this->userService->addRole('ROLE_TEACHER', $user);
+            } elseif ($userType === "client") {
+                $this->userService->addRole('ROLE_CLIENT', $user);
+            }
 
             $entityManager->persist($user);
             $entityManager->flush();

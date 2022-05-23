@@ -25,8 +25,12 @@
                     </a>
 
                     <div class="text-end">
+                        {% if app.user is defined %}
+                            <span>{{ app.user }}</span>
+                        {% else %}
                         <a href="{{ path('security.login') }}" class="btn btn-outline-light me-2">Se connecter</a>
                         <a href="{{ path('security.register') }}" class="btn btn-warning">S'inscrire</a>
+                        {% endif %}
                     </div>
                 </div>
             </header>
@@ -36,8 +40,8 @@
             <nav id="sidebarMenu" class="col-md-3 col-lg-2 d-md-block bg-light sidebar collapse mt-4">
                 <div class="position-sticky pt-3">
                     <ul class="nav flex-column">
-                        {{ menu('Tableau de bord', 'app.home', 'bar-chart-2', 'home') }}
-                        {{ menu('Mes projets', 'app.my_projects', 'inbox', 'projects', 'my-projects') }}
+                        {{ menu('Tableau de bord', 'panel.home', 'bar-chart-2', 'home') }}
+                        {{ menu('Mes projets', 'panel.my_projects', 'inbox', 'projects', 'my-projects') }}
                         {{ menu('Mes équipes', 'app.placeholder', 'users', 'teams') }}
                     </ul>
 
@@ -51,6 +55,7 @@
                     <ul class="nav flex-column mb-2">
                         {{ menu('Projets', 'project.index', 'inbox', 'projects') }}
                         {{ menu('Mandats', 'direje.mandate.index', 'bookmark', 'direje.mandate') }}
+                        {{ menu('Effectif', 'direje.resources.index', 'bookmark', 'direje.resources') }}
                         {#{{ menu('Projets', 'dir.project.index', 'inbox', 'dir.project') }}#}
                         {#{{ menu('Mes équipes', 'dir.teams.index', 'users', 'dir.teams') }}#}
                     </ul>
@@ -66,7 +71,8 @@
                     <ul class="nav flex-column mb-2">
                         {{ menu('Projets', 'project.index', 'inbox', 'projects') }}
                         {{ menu('Mandats', 'admin.mandate.index', 'bookmark', 'admin.mandate') }}
-                        {{ menu('Clients', 'app.placeholder', 'users', 'admin.client') }}
+                        {{ menu('Clients', 'copil.clients.index', 'users', 'copil.clients') }}
+                        {{ menu('Effectifs', 'copil.resource.index', 'users', 'copil.resources') }}
                     </ul>
 
                     {% endif %}
@@ -79,7 +85,7 @@
                         </a>#}
                     </h6>
                     <ul class="nav flex-column mb-2">
-                        {{ menu('Utilisateurs', 'app.placeholder', 'users', 'admin.user') }}
+                        {{ menu('Utilisateurs', 'admin.user.index', 'users', 'admin.user') }}
                         {{ menu('Paramètres', 'app.placeholder', 'settings', 'admin.setting') }}
                     </ul>
                     {% endif %}

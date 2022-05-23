@@ -52,6 +52,7 @@ class MandateRepository extends ServiceEntityRepository
     {
         return $this->createQueryBuilder('m')
             ->andWhere('m.state > 1')
+            ->andWhere('m.state != 4')
             ->orderBy('m.uid', 'ASC')
             ->getQuery()
             ->getResult()

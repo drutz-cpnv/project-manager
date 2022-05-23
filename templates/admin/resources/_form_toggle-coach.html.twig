@@ -1,0 +1,8 @@
+<form method="post" class="form-button" action="{{ path('copil.resource.coach.toggle', {'id': coach.id}) }}">
+    <input type="hidden" name="_token" value="{{ csrf_token('toggleCoach' ~ coach.id) }}">
+    {% if coach.canCoach %}
+        <button type="submit" class="btn btn-outline-danger btn-sm">Retirer le supérviseur</button>
+    {% else %}
+        <button type="submit" class="btn btn-outline-warning btn-sm">Ajouter aux supérviseur</button>
+    {% endif %}
+</form>

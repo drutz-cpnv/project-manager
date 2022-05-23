@@ -2,10 +2,12 @@
 
 namespace App\Controller;
 
+use App\Entity\Person;
 use App\Entity\Project;
 use App\Services\DefaultService;
 use App\Services\ProjectService;
 use App\Services\UpdateService;
+use App\Services\UserService;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
@@ -27,11 +29,19 @@ class TaskController extends BaseController
         return $this->redirectToRoute('app.home', [], Response::HTTP_SEE_OTHER);
     }
 
-    #[Route("/update/{method}", name: "default_config")]
+    #[Route("/update/{method}", name: "update")]
     public function updateItemOperation(string $method, UpdateService $updateService): Response
     {
         $updateService->$method();
         return $this->redirectToRoute('app.home', [], Response::HTTP_SEE_OTHER);
     }
+
+    #[Route("/user/create/{id}/copil", name: "user.create.copil", env: "dev")]
+    public function createUserFromPerson(Person $person, UserService $userService): Response
+    {
+        $userService->testCreate($person, ['ROLE_COPIL']);
+        return $this->redirectToRoute('app.home', [], Response::HTTP_SEE_OTHER);
+    }
+
 
 }

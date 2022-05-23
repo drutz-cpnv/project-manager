@@ -16,7 +16,10 @@ use Doctrine\Persistence\ManagerRegistry;
  */
 class PersonRepository extends ServiceEntityRepository
 {
-    public function __construct(ManagerRegistry $registry)
+    public function __construct(
+        ManagerRegistry $registry,
+        private UserRepository $userRepository,
+    )
     {
         parent::__construct($registry, Person::class);
     }
@@ -66,6 +69,72 @@ class PersonRepository extends ServiceEntityRepository
             ;
     }
 
+    /**
+     * @return Person[]
+     */
+    public function findNonCoach()
+    {
+        return $this->createQueryBuilder('p')
+            ->andWhere('p.canCoach = 0')
+            ->andWhere('p.type = 3')
+            ->orderBy('p.lastname', 'ASC')
+            ->getQuery()
+            ->getResult()
+            ;
+    }
+
+    /**
+     * @return Person[]
+     */
+    public function findAllStudents()
+    {
+        return $this->createQueryBuilder('p')
+            ->andWhere('p.type = 2')
+            ->orderBy('p.lastname', 'ASC')
+            ->getQuery()
+            ->getResult()
+            ;
+    }
+
+    public function findAllTeachers()
+    {
+        return $this->createQueryBuilder('p')
+            ->andWhere('p.type = 3')
+            ->orderBy('p.lastname', 'ASC')
+            ->getQuery()
+            ->getResult()
+            ;
+    }
+
+    public function findAllClients()
+    {
+        return $this->createQueryBuilder('p')
+            ->andWhere('p.type = 1')
+            ->orderBy('p.lastname', 'ASC')
+            ->getQuery()
+            ->getResult()
+            ;
+    }
+
+    /**
+     * @return Person[]
+     */
+    public function findAllNonUser()
+    {
+        /** @var Person[] $persons */
+        $persons = $this->createQueryBuilder('p')
+            ->orderBy('p.lastname', 'ASC')
+            ->getQuery()
+            ->getResult()
+            ;
+        $output = [];
+
+        foreach ($persons as $person) {
+            if (is_null($person->getUser())) $output[] = $person;
+        }
+        return $output;
+    }
+
     // /**
     //  * @return Person[] Returns an array of Person objects
     //  */
@@ -94,4 +163,10 @@ class PersonRepository extends ServiceEntityRepository
         ;
     }
     */
+
+
+    public function findAllCopil()
+    {
+        return $this->userRepository->findByRole(3);
+    }
 }

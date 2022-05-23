@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use App\Helper\StringFormat;
 use App\Repository\UserRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -58,6 +59,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\OneToMany(mappedBy: 'createdBy', targetEntity: File::class)]
     private $files;
 
+    #[ORM\OneToMany(mappedBy: 'createdBy', targetEntity: Document::class)]
+    private $documents;
+
 
     public function __construct()
     {
@@ -68,6 +72,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         $this->updatedProjects = new ArrayCollection();
         $this->memberships = new ArrayCollection();
         $this->files = new ArrayCollection();
+        $this->documents = new ArrayCollection();
     }
 
     /**
@@ -92,21 +97,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     {
        $this->email = $email;
        return $this;
-    }
-
-    public function getFirstname(): ?string
-    {
-        return $this->getPerson()->getFirstname();
-    }
-
-    public function getLastname(): ?string
-    {
-        return $this->getPerson()->getLastname();
-    }
-
-    public function getFullname(): string
-    {
-        return $this->getFirstname() . " " . $this->getLastname();
     }
 
     /**
@@ -170,10 +160,16 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function getRoles(): array
     {
         $roles = [];
-        foreach ($this->roles as $role) {
+        $roles[] = "ROLE_USER";
+         foreach ($this->roles as $role) {
             $roles[] = $role->getSlug();
         }
         return $roles;
+    }
+
+    public function getRoleString()
+    {
+        return StringFormat::CSV($this->getRoles());
     }
 
     public function addRole(Role $role): self
@@ -337,10 +333,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $projects;
     }
 
-    public function getClass(): Classe
-    {
-        return $this->getPerson()->getClass();
-    }
 
     /**
      * @return Collection<int, File>
@@ -370,6 +362,71 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         }
 
         return $this;
+    }
+
+    /**
+     * @return Collection<int, Document>
+     */
+    public function getDocuments(): Collection
+    {
+        return $this->documents;
+    }
+
+    public function addDocument(Document $document): self
+    {
+        if (!$this->documents->contains($document)) {
+            $this->documents[] = $document;
+            $document->setCreatedBy($this);
+        }
+
+        return $this;
+    }
+
+    public function removeDocument(Document $document): self
+    {
+        if ($this->documents->removeElement($document)) {
+            // set the owning side to null (unless already changed)
+            if ($document->getCreatedBy() === $this) {
+                $document->setCreatedBy(null);
+            }
+        }
+
+        return $this;
+    }
+
+
+    /**
+     * Data from related Person entity
+     */
+
+    public function getFirstname(): ?string
+    {
+        return $this->getPerson()->getFirstname();
+    }
+
+    public function getLastname(): ?string
+    {
+        return $this->getPerson()->getLastname();
+    }
+
+    public function getFullname(): string
+    {
+        return $this->getFirstname() . " " . $this->getLastname();
+    }
+
+    public function getClass(): Classe
+    {
+        return $this->getPerson()->getClass();
+    }
+
+    public function getType(): PersonType
+    {
+        return $this->getPerson()->getType();
+    }
+
+    public function isDirector(): bool
+    {
+        return $this->getPerson()->isDirector();
     }
 
 }

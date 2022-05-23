@@ -58,4 +58,13 @@ class MandateController extends BaseController
         return $this->redirectToRoute('direje.mandate.show', ['id' => $mandate->getId()], Response::HTTP_SEE_OTHER);
     }
 
+    #[Route("/{id}/change-state/{stateId}", name: "state_change", methods: ["POST"])]
+    public function changeState(Mandate $mandate, string $stateId, Request $request): Response
+    {
+        if ($this->isCsrfTokenValid('direjeRefuse'.$mandate->getId(), $request->request->get('_token'))) {
+            $this->mandateService->refuse($mandate);
+        }
+        return $this->redirectToRoute('direje.mandate.show', ['id' => $mandate->getId()], Response::HTTP_SEE_OTHER);
+    }
+
 }

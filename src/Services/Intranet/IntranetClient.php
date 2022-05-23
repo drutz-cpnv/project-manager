@@ -4,6 +4,9 @@ namespace App\Services\Intranet;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Symfony\Contracts\HttpClient\Exception\ClientExceptionInterface;
+use Symfony\Contracts\HttpClient\Exception\RedirectionExceptionInterface;
+use Symfony\Contracts\HttpClient\Exception\ServerExceptionInterface;
+use Symfony\Contracts\HttpClient\Exception\TransportExceptionInterface;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
 
 class IntranetClient implements IntranetClientInterface
@@ -41,11 +44,6 @@ class IntranetClient implements IntranetClientInterface
         private HttpClientInterface $httpClient,
     )
     {
-    }
-
-    public function setOptions(array $options)
-    {
-        $this->options = $options;
     }
 
     public function findAllStudents(): ArrayCollection
@@ -90,7 +88,6 @@ class IntranetClient implements IntranetClientInterface
             $url = self::CONFIG['base_uri'] . self::CONFIG[$type]['endpoint'] . self::CONFIG['format'] . "?" . $this->getQueryString();
         }
 
-
         return $this->fetch($url);
     }
 
@@ -119,21 +116,20 @@ class IntranetClient implements IntranetClientInterface
         ));
     }
 
+
     private function fetch($uri, $method = 'GET')
     {
-        $result = $this->httpClient->request($method, $uri);
-
-        $this->raw_response = $result;
-
-        $this->responseCode = $result->getStatusCode();
         try {
-            return json_decode($result->getContent());
-        } catch (ClientExceptionInterface $e) {
-            if($e->getCode() === 404) {
-                return json_decode('{"error": true}');
-            }
+            $result = $this->httpClient->request($method, $uri);
+            $this->raw_response = $result;
+
+            $this->responseCode = $result->getStatusCode();
+            $content = $result->getContent();
+        } catch (\Exception $e) {
+            return json_decode('{"error": true}');
         }
-        return json_decode($result->getContent());
+
+        return json_decode($content);
     }
 
     public function getRawResponse()

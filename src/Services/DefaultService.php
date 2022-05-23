@@ -59,10 +59,11 @@ class DefaultService
         $default = [];
 
         foreach ($this->intranetClient->findAllClasses() as $class) {
-            $default[] = (new Classe())
-                ->setName($class->name)
-                ->setSlug($class->friendly_id)
-            ;
+            if(!str_contains($class->name, "YMMED") && (str_contains($class->name, "3") || str_contains($class->name, "CA2"))) {
+                $default[] = (new Classe())
+                    ->setName($class->name)
+                    ->setSlug($class->friendly_id);
+            }
         }
 
         $this->defineToPersist($default, Classe::class);
@@ -92,6 +93,7 @@ class DefaultService
             (new Role())->setName("Enseignant")->setSlug("ROLE_TEACHER"),
             (new Role())->setName("Étudiant")->setSlug("ROLE_STUDENT"),
             (new Role())->setName("Client")->setSlug("ROLE_CLIENT"),
+            (new Role())->setName("Supérviseur")->setSlug("ROLE_COACH"),
         ];
 
         $this->defineToPersist($default, Role::class);
@@ -136,6 +138,18 @@ class DefaultService
                 ->setName('Livrable final')
                 ->setIsFinal(true)
                 ->setDescription("Cette dernière phase marque la fin du projet et la facturation complète du projet au client."),
+            (new Milestone())
+                ->setName('Évaluation supérviseur')
+                ->setDescription("Ce jalon est terminé une fois que le enseignant qui a supérviser le projet a remplis le formulaire de notation de coach."),
+            (new Milestone())
+                ->setName('Évaluation client')
+                ->setDescription("Ce jalon est terminé une fois que le client a remplis le formulaire de notation client."),
+            (new Milestone())
+                ->setName('Archivage')
+                ->setDescription("Pour finir ce jalon, tous les fichiers de travail, rendu ainsi que les fichiers de gestion de projet."),
+            (new Milestone())
+                ->setName('Réalisation de l\'affiche')
+                ->setDescription("Pour finir ce jalon, tous les fichiers de travail, les livrables ainsi que les fichiers de gestion de projet."),
         ];
     }
 

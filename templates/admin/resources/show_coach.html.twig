@@ -1,0 +1,47 @@
+{% extends 'base.html.twig' %}
+
+{% set hasNavTabs = true %}
+
+{% block title %}Effectif{% endblock %}
+
+{% block navTabs %}
+    {{ include('partials/resources/_resources_nav_header.html.twig') }}
+{% endblock %}
+
+{% block body %}
+    <main class="w-75 mx-auto mt-5">
+        <h4 class="h4">Supérviseurs</h4>
+        <p class="text-muted">Liste des enseignants étant disponibles dans la liste de séléction d'un supérviseur lors de l'attribution d'un projet par un Directeur.</p>
+        <hr>
+        <div class="list-group">
+            {% for coach in coachs %}
+                <div class="list-group-item d-flex justify-content-between align-items-center">
+                    <span class="ms-2 me-auto">
+                        <span class="fw-bold">{{ coach }}</span><br>
+                    </span>
+                    <div>
+                        {{include('admin/resources/_form_toggle-coach.html.twig')}}
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+
+        <h4 class="h4 mt-4">Ne peuvent pas supérviser</h4>
+        <p class="text-muted">Liste des enseignants, qui n'apparaîtront pas dans la liste de supérviseur des projets.</p>
+        <hr>
+        <div class="list-group">
+            {% for coach in not_coachs %}
+                <div class="list-group-item d-flex justify-content-between align-items-center">
+                    <span class="ms-2 me-auto">
+                        <span class="fw-bold">{{ coach }}</span><br>
+                    </span>
+                    <div>
+                        {{include('admin/resources/_form_toggle-coach.html.twig')}}
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    </main>
+{% endblock %}
+
+

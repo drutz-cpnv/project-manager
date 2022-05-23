@@ -45,6 +45,36 @@ class ClasseRepository extends ServiceEntityRepository
         }
     }
 
+    /**
+     * @return Classe[]
+     */
+    public function findParentClasses(): array
+    {
+        return $this->createQueryBuilder('c')
+            ->andWhere('c.name LIKE :val')
+            ->setParameter('val', 'SM-C%')
+            ->orderBy('c.id', 'ASC')
+            ->setMaxResults(10)
+            ->getQuery()
+            ->getResult()
+            ;
+    }
+
+    /**
+     * @return Classe[]
+     */
+    public function findByClassId(string $id): array
+    {
+        return $this->createQueryBuilder('c')
+            ->andWhere('c.name LIKE :val')
+            ->setParameter('val', "%$id")
+            ->orderBy('c.id', 'ASC')
+            ->setMaxResults(10)
+            ->getQuery()
+            ->getResult()
+            ;
+    }
+
     // /**
     //  * @return Classe[] Returns an array of Classe objects
     //  */

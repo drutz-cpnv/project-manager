@@ -52,11 +52,15 @@ class Person
     #[ORM\OneToOne(mappedBy: 'person', targetEntity: Client::class, cascade: ['persist', 'remove'])]
     private $client;
 
+    #[ORM\OneToMany(mappedBy: 'coach', targetEntity: PersonalEvaluation::class)]
+    private $studentEvaluations;
+
     public function __construct()
     {
         $this->setCreatedAt(new \DateTimeImmutable());
         $this->setUpdatedAt(new \DateTimeImmutable());
         $this->supervisedProjects = new ArrayCollection();
+        $this->studentEvaluations = new ArrayCollection();
     }
 
     /**
@@ -148,6 +152,11 @@ class Person
     public function isClient(): bool
     {
         return $this->getType()->getSlug() === 'client';
+    }
+
+    public function isDirector(): bool
+    {
+        return in_array('ROLE_DIRECTOR', $this->getUser()->getRoles());
     }
 
     public function setType(?PersonType $type): self
@@ -273,5 +282,44 @@ class Person
 
         return $this;
     }
+
+    public function getMainClass(): ?Classe
+    {
+        if(is_null($this->getClass())) return null;
+        if(is_null($this->getClass()->getParent())) return $this->getClass();
+        return $this->getClass()->getParent();
+        //return $this->getClass()->getChildren() ?: $this->getClass();
+    }
+
+    /**
+     * @return Collection<int, PersonalEvaluation>
+     */
+    public function getStudentEvaluations(): Collection
+    {
+        return $this->studentEvaluations;
+    }
+
+    public function addStudentEvaluation(PersonalEvaluation $studentEvaluation): self
+    {
+        if (!$this->studentEvaluations->contains($studentEvaluation)) {
+            $this->studentEvaluations[] = $studentEvaluation;
+            $studentEvaluation->setCoach($this);
+        }
+
+        return $this;
+    }
+
+    public function removeStudentEvaluation(PersonalEvaluation $studentEvaluation): self
+    {
+        if ($this->studentEvaluations->removeElement($studentEvaluation)) {
+            // set the owning side to null (unless already changed)
+            if ($studentEvaluation->getCoach() === $this) {
+                $studentEvaluation->setCoach(null);
+            }
+        }
+
+        return $this;
+    }
+
 
 }

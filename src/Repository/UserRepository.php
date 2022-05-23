@@ -2,6 +2,7 @@
 
 namespace App\Repository;
 
+use App\Entity\Role;
 use App\Entity\User;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\ORM\OptimisticLockException;
@@ -60,6 +61,28 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
         $user->setPassword($newHashedPassword);
         $this->_em->persist($user);
         $this->_em->flush();
+    }
+
+
+    public function findAllCopil()
+    {
+        
+    }
+
+    public function findByRole(mixed $role)
+    {
+        $result = $this->createQueryBuilder('u')
+            ->where(':val MEMBER OF u.roles');
+
+        if(is_int($role) || $role instanceof Role) {
+            $result->setParameter('val', $role);
+        }
+
+        return $result
+            ->setMaxResults(10)
+            ->getQuery()
+            ->getResult();
+
     }
 
     // /**

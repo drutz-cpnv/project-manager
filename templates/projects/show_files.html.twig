@@ -1,0 +1,30 @@
+{% extends 'base.html.twig' %}
+
+{% set hasNavTabs = true %}
+
+{% block title %}{{ project.uid }} — {{ project.title }}{% endblock %}
+
+{% block navTabs %}
+    {{ include('partials/_project_nav_header.html.twig') }}
+{% endblock %}
+
+{% block headerBtn %}
+    <a href="{{ path('project.files.add', {id: project.id}) }}" class="btn btn-primary">Nouveau fichier</a>
+{% endblock %}
+
+{% block body %}
+    <div class="w-75 mx-auto mt-5">
+        <h2 class="h1 mb-5">Fichier</h2>
+
+        <h4 class="h4 mt-2">Fichiers du projet</h4>
+        <p class="text-muted">Vous pouvez deposer différant fichier ici, tel que le cahier des charges ou le planning.</p>
+        <hr>
+        {{ include('partials/project/files_list.html.twig', {files: project.files}) }}
+        <h4 class="h4 mt-5">Fichiers du mandat</h4>
+        <p class="text-muted">Fichiers déposés par le client lors de la demande de mandat.</p>
+        <hr>
+        {{ include('partials/project/files_list.html.twig', {files: mandateFiles}) }}
+    </div>
+{% endblock %}
+
+

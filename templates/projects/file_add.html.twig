@@ -1,0 +1,18 @@
+{% extends 'base.html.twig' %}
+
+{% set hasNavTabs = true %}
+
+{% block title %}{{ project.uid }} — {{ project.title }}{% endblock %}
+
+{% block navTabs %}
+    {{ include('partials/_project_nav_header.html.twig') }}
+{% endblock %}
+
+{% block body %}
+    <div class="w-75 mx-auto mt-5">
+        <h2 class="h1 mb-5">Ajouter un fichier</h2>
+        {{ include('projects/_file_form.html.twig') }}
+    </div>
+{% endblock %}
+
+

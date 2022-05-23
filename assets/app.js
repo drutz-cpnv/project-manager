@@ -11,3 +11,4 @@
 import './bootstrap';
 import feather from "feather-icons";
 import './global'
+import './panel'

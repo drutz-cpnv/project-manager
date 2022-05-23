@@ -18,10 +18,10 @@ class Client
     #[ORM\OneToMany(mappedBy: 'client', targetEntity: Mandate::class, orphanRemoval: true)]
     private $mandates;
 
-    #[ORM\Column(type: 'string', length: 255)]
+    #[ORM\Column(type: 'string', length: 255, nullable: true)]
     private $lastname;
 
-    #[ORM\Column(type: 'string', length: 255)]
+    #[ORM\Column(type: 'string', length: 255, nullable: true)]
     private $firstname;
 
     #[ORM\Column(type: 'string', length: 255)]
@@ -45,18 +45,6 @@ class Client
     public function getId(): ?int
     {
         return $this->id;
-    }
-
-    public function getName(): ?string
-    {
-        return $this->name;
-    }
-
-    public function setName(string $name): self
-    {
-        $this->name = $name;
-
-        return $this;
     }
 
     /**
@@ -91,7 +79,7 @@ class Client
 
     public function getLastname(): ?string
     {
-        return $this->lastname;
+        return $this->lastname ?? $this->getPerson()->getLastname();
     }
 
     public function setLastname(string $lastname): self
@@ -103,7 +91,7 @@ class Client
 
     public function getFirstname(): ?string
     {
-        return $this->firstname;
+        return $this->firstname ?? $this->getPerson()->getFirstname();
     }
 
     public function setFirstname(string $firstname): self

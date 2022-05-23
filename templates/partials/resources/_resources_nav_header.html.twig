@@ -1,0 +1,16 @@
+<ul class="nav nav-tabs">
+    <li class="nav-item">
+        <a class="nav-link" href="{{ path('copil.resource.index') }}" {{ tabActive('tab0') }}>Informations</a>
+    </li>
+    {% for classTab in classes %}
+        <li class="nav-item">
+            <a class="nav-link" href="{{ path('copil.resource.class', {id: classTab.id}) }}" {{ tabActive('tab'~classTab.id) }}>{{ classTab }}</a>
+        <li class="nav-item">
+    {% endfor %}
+    <li class="nav-item">
+        <a class="nav-link" href="{{ path('copil.resource.coach') }}" {{ tabActive('tabCoach') }}>Supériviseur</a>
+    <li class="nav-item">
+    <li class="nav-item">
+        <a class="nav-link" href="{{ path('copil.resource.copil') }}" {{ tabActive('tabCopil') }}>COPIL</a>
+    <li class="nav-item">
+</ul>

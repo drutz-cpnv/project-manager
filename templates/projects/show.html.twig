@@ -32,10 +32,11 @@
                 <h2>Fichiers</h2>
                 <p>Voici les fichiers fournis par le client dans le but d'étailler ça demande de mandat.</p>
                 <ul class="icon-list">
-                    <li><a href="#">Bootstrap quick start guide</a></li>
-                    <li><a href="#">Bootstrap Webpack guide</a></li>
-                    <li><a href="#">Bootstrap Parcel guide</a></li>
-                    <li><a href="#">Contributing to Bootstrap</a></li>
+                    {% for file in project.mandate.files %}
+                        <li><a href="{{vich_uploader_asset(file)}}">{{ file.title }}</a></li>
+                    {% else %}
+                        <li class="text-muted">Aucun fichier</li>
+                    {% endfor %}
                 </ul>
             </div>
         </div>

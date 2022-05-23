@@ -1,0 +1,34 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Effectif{% endblock %}
+
+{% block body %}
+    <table class="table table-hover">
+        <thead>
+        <tr>
+            <th scope="col">Nom complet</th>
+            <th scope="col">Dernière connexion</th>
+            <th scope="col" class="text-end">Action</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for user in resources %}
+            <tr>
+                <td>{{ user }}</td>
+                <td>{{ user.createdAt | date("d.m.Y H:i") }}</td>
+                <td class="d-flex justify-content-end gap-2">
+                    <div class="dropdown">
+                        <button class="btn btn-sm btn-link" type="button" id="dropdownMenuButton{{ user.id }}" data-bs-toggle="dropdown" aria-expanded="false">
+                            {{ feather('more-vertical') }}
+                        </button>
+                        <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton{{ user.id }}">
+                            <li><a class="dropdown-item" href="#">Afficher</a></li>
+                            <li><a class="dropdown-item" href="#">Afficher le projet</a></li>
+                        </ul>
+                    </div>
+                </td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}
