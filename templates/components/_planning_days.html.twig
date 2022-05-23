@@ -1,0 +1,18 @@
+<tr class="planning__months">
+    <td></td>
+    {% for key, month in days().month %}
+    <td colspan="{{ month }}" style="text-align: center">{{ key }}</td>
+    {% endfor %}
+</tr>
+<tr class="planning__days">
+    <td></td>
+    {% for day in days().days %}
+        {% set d = day | date("Y-d-m") %}
+        {% set t = date('now') | date("Y-d-m") %}
+    <td {% if d is same as(t) %}class="bg-warning"{% endif %}>
+        <div>
+            {{ day | date("d") }}
+        </div>
+    </td>
+    {% endfor %}
+</tr>

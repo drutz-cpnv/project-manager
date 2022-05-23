@@ -162,7 +162,6 @@ class Person
     public function setType(?PersonType $type): self
     {
         $this->type = $type;
-
         return $this;
     }
 
@@ -319,6 +318,15 @@ class Person
         }
 
         return $this;
+    }
+
+    /**
+     * @return Project[]
+     */
+    public function getProjects(): array
+    {
+        if(is_null($this->getUser())) return [];
+        return $this->getUser()->getProjects();
     }
 
 

@@ -1,0 +1,36 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Planning{% endblock %}
+
+{% block body %}
+
+        {% for class in classes %}
+        <h2 class="h3">{{ class }}</h2>
+
+        <hr class="mb-1">
+
+
+        <div class="table-container">
+            <table class="mb-5 planning-table">
+                <thead>
+                    {{ include('components/_planning_days.html.twig') }}
+                </thead>
+                <tbody>
+                {% for student in class.students %}
+                    <tr>
+                        <th>{{ student }}</th>
+                    </tr>
+                    {% for project in student.projects %}
+                    <tr>
+                        <th class="project-title">{{ project }}</th>
+                        <td colspan="{{ project.offset.days }}"></td>
+                        <td colspan="{{ project.duration.days }}" class="planning__project-cel"></td>
+                    </tr>
+                    {% endfor %}
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        {% endfor %}
+{% endblock %}

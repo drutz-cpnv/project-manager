@@ -109,3 +109,39 @@ body {
   align-items: center;
   gap: 8px;
 }
+
+.planning-table {
+  border-collapse: collapse;
+
+  th, td {
+    border-left: 1px solid #AAAAAA;
+    padding: 8px;
+  }
+
+  tbody{
+    position: relative;
+  }
+
+  tbody th {
+    position: sticky;
+    left: 0;
+    background-color: #d5e3ec;
+    width: 200px;
+    display: block;
+
+    &.project-title {
+      background-color: #e0e3e6;
+    }
+  }
+
+}
+
+.table-container{
+  width: 100%;
+  overflow-x: scroll;
+}
+
+.planning__project-cel{
+  background-color: #2470dc;
+  border: 2px solid #FFF;
+}

@@ -341,4 +341,16 @@ class Project
         return $this;
     }
 
+    public function getDuration()
+    {
+        if(is_null($this->getSpecificationsEndDate())) return null;
+        return $this->getSpecificationsEndDate()->diff($this->getCreatedAt());
+    }
+
+    public function getOffset()
+    {
+        $startY = new \DateTime("2021-08-01");
+        return $this->getCreatedAt()->diff($startY);
+    }
+
 }
