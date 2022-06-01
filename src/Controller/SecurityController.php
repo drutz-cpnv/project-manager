@@ -4,8 +4,11 @@ namespace App\Controller;
 
 use App\Entity\Person;
 use App\Entity\User;
+use App\Form\ClientRegistrationFormType;
 use App\Form\RegistrationFormType;
+use App\Repository\ClientRepository;
 use App\Security\EmailVerifier;
+use App\Services\ClientService;
 use App\Services\UserService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bridge\Twig\Mime\TemplatedEmail;
@@ -80,6 +83,35 @@ class SecurityController extends BaseController
 
         return $this->render('registration/register.html.twig', [
             'registrationForm' => $form->createView(),
+        ]);
+    }
+
+    #[Route('/as-client-register', name: 'register_client')]
+    public function clientRegister(Request $request, ClientService $clientService): Response
+    {
+        $user = new User();
+        $form = $this->createForm(ClientRegistrationFormType::class, $user);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+
+            $clientService->create($user, $form);
+
+            // generate a signed url and email it to the user
+            $this->emailVerifier->sendEmailConfirmation('security.verify_email', $user,
+                (new TemplatedEmail())
+                    ->from(new Address('junior-entreprise@je.drutz.ch', 'Junior Entreprise'))
+                    ->to($user->getEmail())
+                    ->subject('Veuillez confirmer votre demande d\'accès')
+                    ->htmlTemplate('registration/confirmation_email.html.twig')
+            );
+            // do anything else you need here, like send an email
+
+            return $this->redirectToRoute('app.home');
+        }
+
+        return $this->renderForm('front/pages/register.html.twig', [
+            'form' => $form,
         ]);
     }
 

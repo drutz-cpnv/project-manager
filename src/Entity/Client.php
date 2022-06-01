@@ -27,7 +27,7 @@ class Client
     #[ORM\Column(type: 'string', length: 255)]
     private $email;
 
-    #[ORM\Column(type: 'string', length: 255)]
+    #[ORM\Column(type: 'string', length: 255, nullable: true)]
     private $company;
 
     #[ORM\Column(type: 'string', length: 255, nullable: true)]
@@ -36,9 +36,11 @@ class Client
     #[ORM\OneToOne(inversedBy: 'client', targetEntity: Person::class, cascade: ['persist', 'remove'])]
     private $person;
 
+    #[ORM\Column(type: 'string', length: 255, nullable: true)]
+    private $contact;
+
     public function __construct()
     {
-        $this->representative = new ArrayCollection();
         $this->mandates = new ArrayCollection();
     }
 
@@ -127,7 +129,7 @@ class Client
 
     public function __toString(): string
     {
-        return $this->getFirstname() . " " . $this->getLastname() . " — " . $this->getCompany();
+        return $this->getFirstname() . " " . $this->getLastname();
     }
 
     public function getPhoneNumber(): ?string
@@ -150,6 +152,18 @@ class Client
     public function setPerson(?Person $person): self
     {
         $this->person = $person;
+
+        return $this;
+    }
+
+    public function getContact(): ?string
+    {
+        return $this->contact;
+    }
+
+    public function setContact(?string $contact): self
+    {
+        $this->contact = $contact;
 
         return $this;
     }

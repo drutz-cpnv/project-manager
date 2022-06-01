@@ -34,7 +34,6 @@ input:disabled {
   color: var(--color);
   padding: space(1) space(1);
   display: block;
-  //width: 100%;
   outline: none;
   min-height: 48px;
   font-family: 'Epilogue', sans-serif;
@@ -42,8 +41,13 @@ input:disabled {
   //line-height: 3;
 }
 
+.form-group input[type=file] {
+  width: calc(100% - 24px);
+}
+
 .form-group textarea{
   line-height: 1.5;
+  resize: vertical;
 }
 
 .ts-control{

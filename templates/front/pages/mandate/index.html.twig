@@ -1,0 +1,32 @@
+{% extends 'app_base.html.twig' %}
+
+{% block body %}
+    <div class="container tab-list-container">
+        <div>
+            <div class="header">
+                <a href="{{ path('app.home') }}" class="btn-back">{{ feather('chevron-left') }} Retour</a>
+                <h1>Mes mandats</h1>
+            </div>
+            <div class="body">
+                <div class="select-list">
+                    <a class="select-list-item" href="{{ path('app.client.new_mandate') }}">
+                        <span class="icon">{{ feather('plus') }}</span>
+                        <span class="nav-item__text">Nouvelle demande de mandat</span>
+                    </a>
+                    {% for mandate in mandates %}
+                    <a class="select-list-item" href="{{ path('api.mandate.show', {'id': mandate.id}) }}" data-mandate="{{ mandate.id }}">
+                        <span class="icon">{{ feather(mandate.icon) }}</span>
+                        <span class="nav-item__text">{{ mandate.uid | strpad(3, '0') }} — {{ mandate.title }}</span>
+                        <span class="chevron-icon">{{ feather('chevron-right') }}</span>
+                    </a>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+        <div data-mandate-show>
+            <div class="header">
+                <h2>Séléctionner un mandat pour l'afficher ici !</h2>
+            </div>
+        </div>
+    </div>
+{% endblock %}
