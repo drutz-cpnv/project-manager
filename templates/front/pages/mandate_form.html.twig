@@ -1,0 +1,52 @@
+{% extends 'app_base.html.twig' %}
+
+
+{% form_theme form 'form/custom_layout.html.twig' %}
+
+{% block body %}
+    <div class="container">
+        <div>
+            <div class="header">
+                <a href="{{ path('app.home') }}" class="btn-back">{{ feather('chevron-left') }} Retour</a>
+                <h1>Demande de mandat</h1>
+            </div>
+            <div class="body">
+                {{ form_start(form) }}
+                <div class="stack">
+                    <h2>Informations professionnelles</h2>
+                    {{ form_row(form.title) }}
+                    {{ form_row(form.description) }}
+                    {{ form_row(form.desiredDate) }}
+                    {{ form_row(form.documentFiles) }}
+                </div>
+                <button class="btn-primary btn-block mt2">Envoyer ma demande</button>
+                {{ form_end(form) }}
+            </div>
+        </div>
+        <div class="gradient-bg">
+            <div class="header">
+                <p class="text-muted">Bienvenue sur</p>
+                <h2>L’application de gestion des projets de la Junior Entreprise</h2>
+            </div>
+            <div class="body">
+                <p class="mb4">Cette application est à destination des</p>
+                <div class="stylized-list ml2">
+                    <div class="list-item">
+                        <div class="icon">{{ feather('tool') }}</div>
+                        <p>Étudiants <span class="text-muted">en médiamatique du CPNV de Ste-Croix de 3e année, afin d’accéder à la gestion de leurs différents projets.</span></p>
+                    </div>
+
+                    <div class="list-item">
+                        <div class="icon">{{ feather('activity') }}</div>
+                        <p>Clients <span class="text-muted">afin d’accéder au suivi de leurs différents projets. Ainsi qu’à effectuer des demandes de mandat.</span></p>
+                    </div>
+
+                    <div class="list-item">
+                        <div class="icon">{{ feather('shield') }}</div>
+                        <p>Enseignants <span class="text-muted">afin de suivre et d'assister les étudiants dans leurs différentes tâches. Ainsi qu'à gérer la réception des nouvelles demandes de mandat.</span></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

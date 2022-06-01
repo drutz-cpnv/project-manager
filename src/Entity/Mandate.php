@@ -30,6 +30,15 @@ class Mandate
         6 => "Annulé",
     ];
 
+    private array $stateIcon = [
+        1 => "clock",
+        2 => "clock",
+        3 => "zap",
+        4 => "x-circle",
+        5 => "check-circle",
+        6 => "x-octagon",
+    ];
+
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: 'integer')]
@@ -282,6 +291,11 @@ class Mandate
         }
         $this->documentFiles = $files;
         return $this;
+    }
+
+    public function getIcon()
+    {
+        return $this->stateIcon[$this->getState()];
     }
 
 }

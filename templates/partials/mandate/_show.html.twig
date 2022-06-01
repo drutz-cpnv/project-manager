@@ -19,7 +19,7 @@
 
         <div class="col-md-6">
             <h2>Fichiers</h2>
-            <p>Voici les fichiers fournis par le client dans le but d'étailler ça demande de mandat.</p>
+            <p>Voici les fichiers fournis par le client dans le but d'étailler sa demande de mandat.</p>
             <ul class="icon-list">
                 {% for file in mandate.files %}
                     <li><a href="{{vich_uploader_asset(file)}}">{{ file.title }}</a></li>

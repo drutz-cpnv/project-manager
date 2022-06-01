@@ -5,6 +5,7 @@ namespace App\Services;
 use App\Entity\Classe;
 use App\Entity\Person;
 use App\Entity\PersonType;
+use App\Entity\User;
 use App\Repository\ClasseRepository;
 use App\Repository\PersonRepository;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -67,6 +68,8 @@ class PersonFactoryService
 
         $this->entityManager->flush();
     }
+
+
 
     private function singleUpdate(Person $person, object $data)
     {

@@ -1,0 +1,12 @@
+<tr>
+    <th></th>
+    {% for month in table.months %}
+        <th colspan="{{ month.dayCount }}">{{ month.label }}</th>
+    {% endfor %}
+</tr>
+<tr>
+    <th>Étudiant</th>
+    {% for day in table.days %}
+        <td><div class="table-day{% if day.isToday %} bg-primary text-light{% endif %}">{{ day.number }}</div></td>
+    {% endfor %}
+</tr>

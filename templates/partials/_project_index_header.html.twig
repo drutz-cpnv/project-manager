@@ -1,0 +1,10 @@
+<ul class="nav nav-tabs">
+    <li class="nav-item">
+        <a class="nav-link" href="{{ path('project.index') }}" {{ tabActive('tab0') }}>Tous</a>
+    </li>
+    {% for key, state in states %}
+    <li class="nav-item">
+        <a class="nav-link" href="{{ path('project.filter', {'filter': state.slug}) }}" {{ tabActive('tab' ~ key) }}>{{ state.label }}</a>
+    </li>
+    {% endfor %}
+</ul>

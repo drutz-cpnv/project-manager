@@ -1,0 +1,9 @@
+<div class="col-4">
+    <a href="{{ path('project.show', {'id': project.id}) }}" class="card text-dark bg-light mb-3 text-decoration-none">
+        <div class="card-header">{{ project.class }}</div>
+        <div class="card-body">
+            <h5 class="card-title">{{ project.uid | strpad(3, '0') }} — {{ project.title }}</h5>
+            <p class="card-text">{{ project.status}}</p>
+        </div>
+    </a>
+</div>

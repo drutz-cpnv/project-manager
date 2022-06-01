@@ -32,11 +32,19 @@ class Project
     ];
 
     public const STATE_LABEL = [
-        1 => "En cours",
-        2 => "En pause",
-        3 => "Annulé",
-        4 => "Terminé",
+        self::STATE_IN_PROGRESS => "En cours",
+        self::STATE_STANDBY => "En pause",
+        self::STATE_CANCELED => "Annulé",
+        self::STATE_FINISHED => "Terminé",
      ];
+
+    public const STATE_SLUG = [
+        self::STATE_IN_PROGRESS => "in-progress",
+        self::STATE_STANDBY => "pause",
+        self::STATE_CANCELED => "cancel",
+        self::STATE_FINISHED => "finished",
+    ];
+
 
     #[ORM\Id]
     #[ORM\GeneratedValue]
@@ -351,6 +359,20 @@ class Project
     {
         $startY = new \DateTime("2021-08-01");
         return $this->getCreatedAt()->diff($startY);
+    }
+
+    public static function STATES()
+    {
+        $out = [];
+        foreach (self::STATE_SLUG as $key => $value) {
+            $out[$key] = [
+                'slug' => $value,
+                'label' => self::STATE_LABEL[$key],
+                'color' => self::STATE_COLOR[$key],
+                'icon' => self::STATE_ICONS[$key]
+            ];
+        }
+        return $out;
     }
 
 }

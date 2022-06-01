@@ -2,6 +2,7 @@
 
 namespace App\Services\Intranet;
 
+use App\Data\Moment;
 use Doctrine\Common\Collections\ArrayCollection;
 use Symfony\Contracts\HttpClient\Exception\ClientExceptionInterface;
 use Symfony\Contracts\HttpClient\Exception\RedirectionExceptionInterface;
@@ -34,6 +35,9 @@ class IntranetClient implements IntranetClientInterface
         ],
         'rooms' => [
             'endpoint' => '/media/salles',
+        ],
+        'moments' => [
+            'endpoint' => '/moments/current',
         ],
         'format' => '.json',
     ];
@@ -76,10 +80,17 @@ class IntranetClient implements IntranetClientInterface
         return $this->makeRequest('classes', $query);
     }
 
+    public function findCurrentMoment(): Moment
+    {
+        return Moment::createFromAPI($this->makeRequest('moments'));
+    }
+
     private function makeRequest(string $type, string $params = null)
     {
         if($this->options['deep']){
-            $this->params['alter[extra]'] = self::CONFIG[$type]['extra'];
+            if(isset(self::CONFIG[$type]['extra'])){
+                $this->params['alter[extra]'] = self::CONFIG[$type]['extra'];
+            }
         }
 
         if(!is_null($params)){

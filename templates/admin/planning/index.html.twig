@@ -3,34 +3,28 @@
 {% block title %}Planning{% endblock %}
 
 {% block body %}
-
-        {% for class in classes %}
+    {% for table in tables %}
+        {% set class = table.class %}
         <h2 class="h3">{{ class }}</h2>
-
-        <hr class="mb-1">
-
-
-        <div class="table-container">
-            <table class="mb-5 planning-table">
+        <div class="table-container mb-5 ">
+            <table class="planning-table">
                 <thead>
-                    {{ include('components/_planning_days.html.twig') }}
+                    {{ include('partials/planning/_day_row.html.twig') }}
+                    {#{{ include('components/_planning_days.html.twig') }}#}
                 </thead>
                 <tbody>
-                {% for student in class.students %}
+
+                {% for student in table.students %}
                     <tr>
-                        <th>{{ student }}</th>
+                        <th>{{ student.student }}</th>
+                        {% for i in 0..table.dayCount %}
+                            <td class="border-1"></td>
+                        {% endfor %}
                     </tr>
-                    {% for project in student.projects %}
-                    <tr>
-                        <th class="project-title">{{ project }}</th>
-                        <td colspan="{{ project.offset.days }}"></td>
-                        <td colspan="{{ project.duration.days }}" class="planning__project-cel"></td>
-                    </tr>
-                    {% endfor %}
+                    {{ include('partials/planning/_project_row.html.twig') }}
                 {% endfor %}
                 </tbody>
             </table>
         </div>
-
-        {% endfor %}
+    {% endfor %}
 {% endblock %}

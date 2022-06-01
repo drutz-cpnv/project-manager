@@ -42,7 +42,28 @@ class ProjectController extends BaseController
     {
         return $this->render('projects/index.html.twig', [
             'menu' => 'projects',
-            'projects' => $projectRepository->findAll()
+            'tab' => 'tab0',
+            'projects' => $projectRepository->findAll(),
+            'states' => Project::STATES()
+        ]);
+    }
+
+    #[Route("/q/{filter}", name: "filter")]
+    public function filter(string $filter, ProjectRepository $projectRepository): Response
+    {
+        if(isset(array_flip(Project::STATE_SLUG)[$filter])) {
+            $f = array_flip(Project::STATE_SLUG)[$filter];
+        }
+        else {
+            return $this->redirectToRoute('project.index', [], Response::HTTP_SEE_OTHER);
+        }
+
+        return $this->render('projects/filter.html.twig', [
+            'menu' => 'projects',
+            'tab' => 'tab'.$f,
+            'projects' => $projectRepository->findBy(['state' => $f]),
+            'states' => Project::STATES(),
+            'filter' => Project::STATES()[$f]
         ]);
     }
 

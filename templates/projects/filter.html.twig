@@ -10,13 +10,15 @@
 
 {% block body %}
     <main class="w-75 mx-auto mt-5">
-        <h2 class="h1 mb-5">Tous les projets</h2>
+        <h2 class="h1 mb-5">{{ filter.label }}</h2>
 
         <hr class="col-3 col-md-2 mb-5">
 
         <div class="row">
             {% for project in projects %}
                 {{ include('partials/project/_project_card.html.twig') }}
+            {% else %}
+                <h3 class="text-warning">Aucun projet n'est {{ filter.label | lower }}.</h3>
             {% endfor %}
         </div>
     </main>

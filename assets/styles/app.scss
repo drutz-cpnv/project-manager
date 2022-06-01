@@ -113,9 +113,9 @@ body {
 .planning-table {
   border-collapse: collapse;
 
-  th, td {
+  th {
+    padding-left: 2px;
     border-left: 1px solid #AAAAAA;
-    padding: 8px;
   }
 
   tbody{
@@ -131,9 +131,28 @@ body {
 
     &.project-title {
       background-color: #e0e3e6;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
     }
   }
 
+}
+
+thead td {
+  padding: 2px;
+}
+
+
+.table-day{
+  background-color: #efefef;
+  border-radius: 5px;
+  width: 30px;
+  height: 30px;
+  text-align: center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 .table-container{

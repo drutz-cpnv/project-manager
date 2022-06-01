@@ -1,0 +1,12 @@
+{% for project in student.projects %}
+<tr>
+    <th class="project-title" data-bs-toggle="tooltip" data-bs-placement="top" title="{{ project.project }}">{{ project.project }}</th>
+    {% for i in 0..project.offset %}
+        <td class="border-1"></td>
+    {% endfor %}
+
+    {% for i in 0..project.length %}
+        <td class="{% if project.project.state is same as(1) %}bg-warning{% elseif project.project.state is same as(2) %}bg-secondary{% elseif project.project.state is same as(3) %}bg-danger{% elseif project.project.state is same as(4) %}bg-success{% endif %} border-1"></td>
+    {% endfor %}
+</tr>
+{% endfor %}
