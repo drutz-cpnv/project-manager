@@ -33,7 +33,7 @@ class TaskController extends BaseController
     public function updateItemOperation(string $method, UpdateService $updateService): Response
     {
         $updateService->$method();
-        return $this->redirectToRoute('app.home', [], Response::HTTP_SEE_OTHER);
+        return $this->redirectToRoute('admin.settings.index', [], Response::HTTP_SEE_OTHER);
     }
 
     #[Route("/user/create/{id}/copil", name: "user.create.copil", env: "dev")]

@@ -25,6 +25,7 @@ class UpdateService
         private RoleRepository $roleRepository,
         private UserRepository $userRepository,
         private PersonRepository $personRepository,
+        private DefaultService $defaultService,
     )
     {
     }
@@ -50,6 +51,11 @@ class UpdateService
         }
 
         $this->entityManager->flush();
+    }
+
+    public function settings()
+    {
+        $this->defaultService->persistSettings();
     }
 
     public function addStudentRoleToStudents()

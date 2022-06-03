@@ -8,6 +8,7 @@ use App\Entity\Person;
 use App\Entity\PersonType;
 use App\Entity\Project;
 use App\Entity\Role;
+use App\Entity\Setting;
 use App\Services\Intranet\IntranetClient;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Security\Core\Security;
@@ -32,6 +33,18 @@ class DefaultService
         $this->students();
         $this->teachers();
         $this->classes();
+
+        if(empty($this->toPersit)) return;
+
+        foreach ($this->toPersit as $toPersit) {
+            $this->entityManager->persist($toPersit);
+        }
+
+        $this->entityManager->flush();
+    }
+
+    public function persistSettings() {
+        $this->settings();
 
         if(empty($this->toPersit)) return;
 
@@ -68,6 +81,28 @@ class DefaultService
 
         $this->defineToPersist($default, Classe::class);
 
+    }
+
+    public function settings()
+    {
+        $default = [
+            (new Setting())
+                ->setName("Jour de la semaine")
+                ->setSettingKey("planning.display_day")
+                ->setDescription("Jour de la semaine à afficher dans le planning.")
+                ->setType("choice")
+                ->setValue("wednesday")
+                ->setOptions([
+                    'monday',
+                    'tuesday',
+                    'wednesday'.
+                    'thursday',
+                    'friday'
+                ])
+            ,
+        ];
+
+        $this->defineToPersist($default, Setting::class);
     }
 
     public function teachers()
@@ -178,6 +213,11 @@ class DefaultService
                     }
                 } elseif (method_exists($class, 'getEmail')) {
                     if ($def->getEmail() === $item->getEmail()) {
+                        $toPersist = false;
+                        continue;
+                    }
+                } elseif (method_exists($class, 'getSettingKey')) {
+                    if ($def->getSettingKey() === $item->getSettingKey()) {
                         $toPersist = false;
                         continue;
                     }

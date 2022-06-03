@@ -5,6 +5,7 @@ namespace App\Controller\Admin;
 use App\Controller\BaseController;
 use App\Helper\HTML\PlanningTable;
 use App\Repository\ClasseRepository;
+use App\Repository\SettingRepository;
 use App\Services\Intranet\IntranetClient;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -16,6 +17,7 @@ class PlanningController extends BaseController
     public function __construct(
         private ClasseRepository $classeRepository,
         private IntranetClient $intranetClient,
+        private SettingRepository $settingRepository,
     )
     {
     }
@@ -24,11 +26,12 @@ class PlanningController extends BaseController
     public function index(): Response
     {
         $moment = $this->intranetClient->findCurrentMoment();
+        $day = $this->settingRepository->findOneBy(['settingKey' => "planning.display_day"]);
 
         $tables = [];
 
         foreach($this->classeRepository->findAll() as $class) {
-            $tables[] = (new PlanningTable())
+            $tables[] = (new PlanningTable($day->getValue()))
                 ->setMoment($moment)
                 ->setClass($class)
                 ->setDays()
