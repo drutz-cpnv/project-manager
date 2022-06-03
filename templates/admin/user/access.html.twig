@@ -1,0 +1,28 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Utilisateurs{% endblock %}
+
+{% block body %}
+    <div class="w-75 mx-auto mt-5">
+        <a href="{{ path('admin.user.index') }}" class="btn-sm btn-secondary">Retour</a>
+        <h4 class="h4 mt-2">Ajouter ou supprimer un role à {{ user }}</h4>
+        <hr>
+        <div class="list-group">
+            {% for role in roles %}
+                <div class="list-group-item d-flex justify-content-between align-items-center">
+                    <span class="ms-2 me-auto">
+                        <span class="fw-bold">{{ role.name }}</span><br>
+                        <span class="text-muted">{{ role.users.count }} utilisateurs possède ce role</span>
+                    </span>
+                    <div>
+                        {% if role.slug not in user.roles %}
+                            <a href="{{ path('admin.user.access.add', {'id': user.id, 'role': role.slug}) }}" class="btn btn-sm btn-success">Ajouter</a>
+                        {% else %}
+                            <a href="{{ path('admin.user.access.remove', {'id': user.id, 'role': role.slug}) }}" class="btn btn-sm btn-danger">Retirer</a>
+                        {% endif %}
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+{% endblock %}
