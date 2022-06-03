@@ -24,12 +24,6 @@ class AdminUserFormType extends AbstractType
             ->add('email')
             ->add('isVerified')
             ->add('person', AdminPersonFormType::class)
-            ->add('roles', EntityType::class, [
-                'class' => Role::class,
-                'choices' => $this->getChoices(),
-                'multiple' => true,
-
-            ])
         ;
     }
 

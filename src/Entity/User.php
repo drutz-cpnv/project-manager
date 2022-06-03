@@ -62,6 +62,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\OneToMany(mappedBy: 'createdBy', targetEntity: Document::class)]
     private $documents;
 
+    #[ORM\Column(type: 'datetime_immutable', nullable: true)]
+    private $bannedAt;
+
 
     public function __construct()
     {
@@ -427,6 +430,23 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function isDirector(): bool
     {
         return $this->getPerson()->isDirector();
+    }
+
+    public function getBannedAt(): ?\DateTimeImmutable
+    {
+        return $this->bannedAt;
+    }
+
+    public function setBannedAt(?\DateTimeImmutable $bannedAt): self
+    {
+        $this->bannedAt = $bannedAt;
+
+        return $this;
+    }
+
+    public function isBanned()
+    {
+        return !is_null($this->getBannedAt());
     }
 
 }

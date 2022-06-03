@@ -52,13 +52,19 @@ class AppAuthenticator extends AbstractLoginFormAuthenticator
 
         $user = $token->getUser();
 
+        if($user->isBanned()) {
+            return new RedirectResponse($this->urlGenerator->generate('security.logout'), 302);
+        }
+
         if(!$user instanceof User) {
             return new RedirectResponse($this->urlGenerator->generate('app.home'));
         }
 
         if($user->getType()->getSlug() !== 'client') {
-            return new RedirectResponse($this->urlGenerator->generate('panel.home'), Response::HTTP_SEE_OTHER);
+            return new RedirectResponse($this->urlGenerator->generate('panel.home'), 301);
         }
+
+
 
         // For example:
         return new RedirectResponse($this->urlGenerator->generate('app.home'));

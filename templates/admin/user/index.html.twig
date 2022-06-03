@@ -13,7 +13,8 @@
                         <span class="fw-bold">{{ user }}</span><br>
                     </span>
                     <div>
-                        <a href="#" class="btn btn-sm btn-outline-warning">Bannir</a>
+                        <a href="{{ path('admin.user.access.ban', {'id': user.id}) }}" class="btn btn-sm btn-outline-warning">{% if user.isBanned %}Débannir{% else %}Bannir{% endif %}</a>
+                        <a href="{{ path('admin.user.access', {'id': user.id}) }}" class="btn btn-sm btn-outline-primary">Pérmissions</a>
                         <a href="{{ path('admin.user.edit', {'id': user.id}) }}" class="btn btn-sm btn-primary">Modifier</a>
                     </div>
                 </div>

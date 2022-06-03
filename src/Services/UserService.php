@@ -76,8 +76,18 @@ class UserService
         $user->setUpdatedAt(new \DateTimeImmutable());
     }
 
+    public function ban(User $user) {
+        $user->setBannedAt(new \DateTimeImmutable());
+        $this->persistUpdate($user);
+    }
 
-    private function persistUpdate(User $user)
+    public function unban(User $user) {
+        $user->setBannedAt(null);
+        $this->persistUpdate($user);
+    }
+
+
+    public function persistUpdate(User $user)
     {
         $user->setUpdatedAt(new \DateTimeImmutable());
         $user->setUpdatedBy($this->security->getUser());
