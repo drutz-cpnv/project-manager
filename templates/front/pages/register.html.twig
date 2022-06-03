@@ -10,7 +10,7 @@
                 <h1>Devenir client</h1>
             </div>
             <div class="body">
-                {{ form_start(form) }}
+                {{ form_start(form, {attr: {"data-turbo": "false"}}) }}
                 <div class="stack">
                     <h2>Informations professionnelles</h2>
                     {{ form_row(form.person.firstname) }}

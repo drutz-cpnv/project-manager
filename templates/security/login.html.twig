@@ -8,7 +8,7 @@
                 <h1><a href="{{ path('app.home') }}" class="back-btn mr2">{{ feather('arrow-left') }}</a>Connexion</h1>
             </div>
             <div class="body">
-                <form method="post">
+                <form method="post" data-turbo="false">
                     {% if error %}
                         <div class="alert alert-danger" role="alert">{{ error.messageKey|trans(error.messageData, 'security') }}</div>
                     {% endif %}
