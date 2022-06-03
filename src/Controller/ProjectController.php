@@ -12,6 +12,7 @@ use App\Form\MemberFormType;
 use App\Form\MilestoneFormType;
 use App\Form\ProjectFileFormType;
 use App\Form\ProjectFormType;
+use App\Form\ProjectTeacherEvaluationFormType;
 use App\Form\StudentEvaluationFormType;
 use App\Repository\MilestoneRepository;
 use App\Repository\ProjectRepository;
@@ -275,6 +276,28 @@ class ProjectController extends BaseController
             'menu' => 'projects',
             'tab' => 'tab6',
             'project' => $project,
+        ]);
+
+    }
+
+    #[Route("/{id}/evaluations/coach", name: "coach.evaluate")]
+    public function coachEval(Project $project, Request $request): Response
+    {
+        $this->projectService->addCoachFinalNotes($project);
+
+        $form = $this->createForm(ProjectTeacherEvaluationFormType::class, $project);
+        $form->handleRequest($request);
+
+        if($form->isSubmitted() && $form->isValid()) {
+            $this->projectService->update($project);
+            return $this->redirectToRoute("project.notes", ['id' => $project->getId()], Response::HTTP_SEE_OTHER);
+        }
+
+        return $this->renderForm('projects/coach_eval.html.twig', [
+            'menu' => 'projects',
+            'tab' => 'tab6',
+            'project' => $project,
+            'form' => $form
         ]);
 
     }

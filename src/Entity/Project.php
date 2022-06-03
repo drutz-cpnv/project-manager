@@ -87,6 +87,9 @@ class Project
     #[ORM\OneToMany(mappedBy: 'project', targetEntity: File::class)]
     private $files;
 
+    #[ORM\OneToMany(mappedBy: 'project', targetEntity: Note::class, cascade: ['persist'])]
+    private $teacherEvaluation;
+
     public function __construct()
     {
         $this->setCreatedAt(new \DateTimeImmutable());
@@ -94,6 +97,7 @@ class Project
         $this->milestones = new ArrayCollection();
         $this->members = new ArrayCollection();
         $this->files = new ArrayCollection();
+        $this->teacherEvaluation = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -373,6 +377,36 @@ class Project
             ];
         }
         return $out;
+    }
+
+    /**
+     * @return Collection<int, Note>
+     */
+    public function getTeacherEvaluation(): Collection
+    {
+        return $this->teacherEvaluation;
+    }
+
+    public function addTeacherEvaluation(Note $teacherEvaluation): self
+    {
+        if (!$this->teacherEvaluation->contains($teacherEvaluation)) {
+            $this->teacherEvaluation[] = $teacherEvaluation;
+            $teacherEvaluation->setProject($this);
+        }
+
+        return $this;
+    }
+
+    public function removeTeacherEvaluation(Note $teacherEvaluation): self
+    {
+        if ($this->teacherEvaluation->removeElement($teacherEvaluation)) {
+            // set the owning side to null (unless already changed)
+            if ($teacherEvaluation->getProject() === $this) {
+                $teacherEvaluation->setProject(null);
+            }
+        }
+
+        return $this;
     }
 
 }

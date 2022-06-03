@@ -1,0 +1,29 @@
+{% extends 'base.html.twig' %}
+
+{% set hasNavTabs = true %}
+{% form_theme form 'bootstrap_5_horizontal_layout.html.twig' %}
+
+{% block title %}{{ project.uid }} — {{ project.title }}{% endblock %}
+
+{% block navTabs %}
+    {{ include('partials/_project_nav_header.html.twig') }}
+{% endblock %}
+
+{% block body %}
+    <div class="w-75 mx-auto mt-5">
+        <h2 class="h1 mb-5">Évaluation final du projet</h2>
+        {{ form_start(form, ) }}
+            {% for note in form.teacherEvaluation %}
+                <fieldset>
+                    <legend>{{ note.name.vars.value }}</legend>
+                    {{ form_row(note.name) }}
+                    {{ form_row(note.value) }}
+                    {{ form_row(note.comment) }}
+                </fieldset>
+            {% endfor %}
+        <button class="btn btn-primary">Enregistrer</button>
+        {{ form_end(form) }}
+    </div>
+{% endblock %}
+
+

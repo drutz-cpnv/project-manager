@@ -54,11 +54,20 @@ class Note
     private $createdAt;
 
     #[ORM\ManyToOne(targetEntity: PersonalEvaluation::class, inversedBy: 'notes')]
-    #[ORM\JoinColumn(nullable: false)]
+    #[ORM\JoinColumn(nullable: true)]
     private $studentEvaluation;
 
     #[ORM\Column(type: 'string', length: 255)]
     private $name;
+
+    #[ORM\ManyToOne(targetEntity: Project::class, inversedBy: 'teacherEvaluation')]
+    private $project;
+
+    public function __construct(
+    )
+    {
+        $this->setCreatedAt(new \DateTimeImmutable());
+    }
 
     public function getId(): ?int
     {
@@ -121,6 +130,18 @@ class Note
     public function setName(string $name): self
     {
         $this->name = $name;
+
+        return $this;
+    }
+
+    public function getProject(): ?Project
+    {
+        return $this->project;
+    }
+
+    public function setProject(?Project $project): self
+    {
+        $this->project = $project;
 
         return $this;
     }

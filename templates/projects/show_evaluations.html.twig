@@ -10,9 +10,50 @@
 
 {% block body %}
     <div class="w-75 mx-auto mt-5">
-        <h2 class="h1 mb-5">Evaluations</h2>
+        <h2 class="h1 mb-5">Évaluations</h2>
 
+        <h4 class="h4 mt-5">Évaluation finale — Supérviseur</h4>
+        <hr>
+        <div class="list-group">
+            {% for note in project.teacherEvaluation %}
+                <div class="list-group-item d-flex justify-content-between align-items-start">
+                <span class="text-warning">
+                        {{ feather('file') }}
+                </span>
 
+                <span class="ms-2 me-auto">
+                    <span class="fw-bold">{{ note.name }}</span><br>
+                    <span class="text-muted">Données par {{ project.coach }}</span><br>
+                </span>
+
+                <div>
+                    <span  class="badge bg-secondary">
+                        {{ note.value }}
+                    </span>
+                </div>
+                </div>
+            {% else %}
+                <div class="list-group-item d-flex justify-content-between align-items-start">
+                <span class="text-danger">
+                    {{ feather('x') }}
+                </span>
+                    <span class="ms-2 me-auto">
+                    <span class="fw-bold">Aucune évaluation</span>
+                </span>
+                </div>
+                {% if is_granted("ROLE_COACH") %}
+                <a href="{{ path('project.coach.evaluate', {'id': project.id}) }}" class="list-group-item d-flex justify-content-between align-items-start">
+                <span class="text-success">
+                    {{ feather('plus') }}
+                </span>
+                    <span class="ms-2 me-auto">
+                    <span class="fw-bold">Évaluer maintenant</span>
+                </span>
+                </a>
+                {% endif %}
+            {% endfor %}
+
+        </div>
         {% for member in project.members %}
 
         <h4 class="h4 mt-5">{{ member }}</h4>
