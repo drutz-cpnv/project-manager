@@ -1,0 +1,11 @@
+<ul class="nav nav-tabs">
+    <li class="nav-item">
+        <a class="nav-link" href="{{ path('copil.clients.show', {id: client.id}) }}" {{ tabActive('tab1') }}>Informations</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link" href="{{ path('copil.clients.show.mandates', {'id': client.id}) }}"  {{ tabActive('tab2') }}>Mandats</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link" href="{{ path('copil.clients.edit', {'id': client.id}) }}" {{ tabActive('tab3') }}>Modifier</a>
+    </li>
+</ul>

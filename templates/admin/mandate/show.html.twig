@@ -5,9 +5,12 @@
 {% block headerBtn %}
     <div class="d-flex gap-2">
         {% if mandate.state is not same as(3) or mandate.state is not same as(4) %}
-        {{include('admin/mandate/_accept_form.html.twig')}}
-        {{include('admin/mandate/_refuse_form.html.twig')}}
+            {{include('admin/mandate/_accept_form.html.twig')}}
+            {{include('admin/mandate/_refuse_form.html.twig')}}
         {% else %}
+        {% endif %}
+        {% if mandate.isDelegated %}
+            <a href="{{ path('project.show', {'id': mandate.projects.first}) }}" class="btn btn-primary">Voir le projet</a>
         {% endif %}
     </div>
 {% endblock %}

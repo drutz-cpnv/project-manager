@@ -41,8 +41,9 @@
                 <div class="position-sticky pt-3">
                     <ul class="nav flex-column">
                         {{ menu('Tableau de bord', 'panel.home', 'bar-chart-2', 'home') }}
-                        {{ menu('Mes projets', 'panel.my_projects', 'inbox', 'projects', 'my-projects') }}
-                        {{ menu('Mes équipes', 'app.placeholder', 'users', 'teams') }}
+                        {% if is_granted("ROLE_STUDENT") %}
+                            {{ menu('Mes projets', 'panel.my_projects', 'inbox', 'projects', 'my-projects') }}
+                        {% endif %}
                     </ul>
 
                     {% if is_granted("ROLE_DIRECTOR") %}
@@ -87,7 +88,7 @@
                     </h6>
                     <ul class="nav flex-column mb-2">
                         {{ menu('Utilisateurs', 'admin.user.index', 'users', 'admin.user') }}
-                        {{ menu('Paramètres', 'app.placeholder', 'settings', 'admin.setting') }}
+                        {{ menu('Paramètres', 'admin.settings.index', 'settings', 'admin.settings') }}
                     </ul>
                     {% endif %}
                 </div>

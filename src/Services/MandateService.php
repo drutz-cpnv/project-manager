@@ -4,8 +4,11 @@ namespace App\Services;
 
 use App\Entity\Client;
 use App\Entity\Mandate;
+use App\Entity\Person;
 use App\Entity\Project;
+use App\Entity\User;
 use App\Repository\MandateRepository;
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Form\FormInterface;
 
@@ -16,12 +19,26 @@ class MandateService
         private EntityManagerInterface $entityManager,
         private MandateRepository $mandateRepository,
         private ProjectService $projectService,
+        private ClientService $clientService
     )
     {
     }
 
     public function create(Mandate $mandate): void
     {
+        if(is_null($mandate->getUid())) {
+            $mandates = new ArrayCollection($this->mandateRepository->findAll());
+
+            if($mandates->isEmpty()) {
+                $uid = 1;
+            }
+            else{
+                $last = $mandates->last()->getUid();
+                $uid = $last + 1;
+            }
+
+            $mandate->setUid($uid);
+        }
         $mandate
             ->setCreatedAt(new \DateTimeImmutable())
             ->setState(Mandate::STATE_PENDING_COPIL_CONFIRM)
@@ -75,6 +92,18 @@ class MandateService
     public function manualCreate(Mandate $mandate, FormInterface $form): void
     {
         $client = $this->entityManager->getRepository(Client::class)->findOneBy(['email' => strtolower($form->get('client_email')->getViewData())]);
+
+        if(is_null($client)) {
+            $person = $this->entityManager->getRepository(Person::class)->findOneBy(['email' => strtolower($form->get('client_email')->getViewData())]);
+            $client = $this->clientService->createFromPerson($person);
+        }
+
+
+        if(is_null($mandate->getUid())) {
+            $last = (new ArrayCollection($this->mandateRepository->findAll()))->last()->getUid();
+            $mandate->setUid($last + 1);
+
+        }
 
         if(is_null($client)) {
             $client = (new Client())

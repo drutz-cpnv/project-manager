@@ -72,7 +72,7 @@ class Mandate
     #[ORM\Column(type: 'integer')]
     private $state = 1;
 
-    #[ORM\OneToMany(mappedBy: 'mandate', targetEntity: File::class, cascade: ["persist"])]
+    #[ORM\OneToMany(mappedBy: 'mandate', targetEntity: File::class, cascade: ["persist", "remove"])]
     private $files;
 
     #[Assert\All([

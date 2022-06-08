@@ -37,8 +37,12 @@ class ProjectService
         $this->em->flush();
     }
 
-    public function update(Project $project): void
+    public function update(Project $project, ?Project $old = null): void
     {
+        if(!is_null($old) && $project->getState() !== $old->getState()) {
+            $project->getMandate()->setState(Project::MANDATE_RELATED_STATE[$project->getState()]);
+        }
+
         $project->setUpdatedAt(new \DateTimeImmutable());
         $this->em->flush();
     }

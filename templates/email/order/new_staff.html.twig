@@ -1,0 +1,50 @@
+{% extends 'email/base.html.twig' %}
+
+{% block title %}Une nouvelle commande est arrivée{% endblock %}
+{% block subject %}Nouvelle commande{% endblock %}
+{% block subject_header %}Commande en attente de validation{% endblock %}
+{% block content %}
+
+    {% for paragraph in content.sections.first.paragraphs %}
+        {% include 'email/_p.html.twig' with {
+            text: paragraph.text
+        } %}
+    {% endfor %}
+
+    {{ include('email/_spacer.html.twig') }}
+    {% include 'email/_table.html.twig' with {
+        cels: [
+            [
+                "N° de commande",
+                order.id
+            ],
+            [
+                "Nom du projet",
+                order.title
+            ],
+            [
+                "Description",
+                order.description
+            ],
+            [
+                "Statut de la commande",
+                order.currentStatus
+            ],
+            [
+                "Durée de location",
+                order.start | date("d.m.Y") ~ " -> " ~ order.end | date("d.m.Y")
+            ],
+            [
+                "Date de commande",
+                order.createdAt | date("d.m.Y à H:i")
+            ]
+        ]
+    } %}
+
+    {% for paragraph in content.sections.last.paragraphs %}
+        {% include 'email/_p.html.twig' with {
+            text: paragraph.text
+        } %}
+    {% endfor %}
+
+{% endblock %}

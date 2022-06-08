@@ -23,13 +23,12 @@ class DefaultService
         private IntranetClient $intranetClient,
         private PersonFactoryService $personFactory,
         private Security $security,
+        private UpdateService $updateService
      )
     {
     }
 
     public function all() {
-        $this->roles();
-        $this->personTypes();
         $this->students();
         $this->teachers();
         $this->classes();
@@ -41,9 +40,47 @@ class DefaultService
         }
 
         $this->entityManager->flush();
+
+        $this->updateService->classes();
+        $this->updateService->students();
+    }
+
+    public function firstSetup()
+    {
+        $this->roles();
+        $this->personTypes();
+
+        if(empty($this->toPersit)) return;
+
+        foreach ($this->toPersit as $toPersit) {
+            $this->entityManager->persist($toPersit);
+        }
+
+        $this->entityManager->flush();
+
+    }
+
+    public function setup()
+    {
+        $this->toPersit = [];
+        $this->students();
+        $this->teachers();
+        $this->classes();
+
+        if(empty($this->toPersit)) return;
+
+        foreach ($this->toPersit as $toPersit) {
+            $this->entityManager->persist($toPersit);
+        }
+
+        $this->entityManager->flush();
+
+        $this->updateService->classes();
+        $this->updateService->students();
     }
 
     public function persistSettings() {
+        $this->toPersit = [];
         $this->settings();
 
         if(empty($this->toPersit)) return;

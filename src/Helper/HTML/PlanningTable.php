@@ -12,7 +12,7 @@ class PlanningTable
     private \DateTimeImmutable $start;
     private \DateTimeImmutable $end;
     private Classe $class;
-    private ?string $displayDay = "wednesday";
+    private ?string $displayDay = null;
     private ?Moment $moment = null;
 
     private int $dayCount = 0;
@@ -22,8 +22,9 @@ class PlanningTable
     private ArrayCollection $months;
     private array $students;
 
-    public function __construct()
+    public function __construct($displayDay)
     {
+        $this->displayDay = $displayDay;
         $this->days = new ArrayCollection();
         $this->months = new ArrayCollection();
     }

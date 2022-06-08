@@ -21,13 +21,13 @@
             <td>{{ client.company }}</td>
             <td>{{ client.phoneNumber ?? "Aucun numéro de téléphone" }}</td>
             <td class="d-flex justify-content-end gap-2">
-                <a href="#" class="btn btn-sm btn-outline-primary">Afficher</a>
+                <a href="{{ path('copil.clients.show', {'id': client.id}) }}" class="btn btn-sm btn-outline-primary">Afficher</a>
                 <div class="dropdown">
                     <button class="btn btn-sm btn-link" type="button" id="dropdownMenuButton{{ client.id }}" data-bs-toggle="dropdown" aria-expanded="false">
                         {{ feather('more-vertical') }}
                     </button>
                     <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton{{ client.id }}">
-                        <li><a class="dropdown-item" href="#">Afficher les mandats</a></li>
+                        <li><a class="dropdown-item" href="{{ path('copil.clients.show.mandates', {'id': client.id}) }}">Afficher les mandats</a></li>
                     </ul>
                 </div>
             </td>

@@ -17,7 +17,9 @@ class PersonFactoryService
 
     private const API_TRANSLATE_TYPE = [
         'Cpnv::CurrentStudent' => 'student',
-        'Cpnv::Teacher' => 'teacher'
+        'Cpnv::Teacher' => 'teacher',
+        'Cpnv::HeadTeacher' => 'teacher',
+        'Cpnv::Dean' => 'teacher',
     ];
 
     public function __construct(

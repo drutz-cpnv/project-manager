@@ -41,7 +41,7 @@
                     <span class="fw-bold">Aucune évaluation</span>
                 </span>
                 </div>
-                {% if is_granted("ROLE_COACH") %}
+                {% if is_granted("FINAL_EVAL", project) %}
                 <a href="{{ path('project.coach.evaluate', {'id': project.id}) }}" class="list-group-item d-flex justify-content-between align-items-start">
                 <span class="text-success">
                     {{ feather('plus') }}

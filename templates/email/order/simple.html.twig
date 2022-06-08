@@ -1,0 +1,56 @@
+{% extends 'email/base.html.twig' %}
+
+{% set subject_header_color = order.currentStatus.state.color %}
+
+{% block title %}{{ title }}{% endblock %}
+{% block subject %}{{ subject }}{% endblock %}
+{% block subject_header %}{{ subject_header }}{% endblock %}
+{% block content %}
+
+    {% for paragraph in content.sections.first.paragraphs %}
+        {% include 'email/_p.html.twig' with {
+            text: paragraph.text
+        } %}
+    {% endfor %}
+
+    {{ include('email/_spacer.html.twig') }}
+    {% include 'email/_table.html.twig' with {
+        cels: [
+            [
+                "N° de commande",
+                order.initialZeroId
+            ],
+            [
+                "Nom du projet",
+                order.title
+            ],
+            [
+                "Description",
+                order.description
+            ],
+            [
+                "Statut de la commande",
+                order.currentStatus
+            ],
+            [
+                "Détails du statut",
+                order.currentStatus.comments
+            ],
+            [
+                "Durée de location",
+                order.start | date("d.m.Y") ~ " -> " ~ order.end | date("d.m.Y")
+            ],
+            [
+                "Date de commande",
+                order.createdAt | date("d.m.Y à H:i")
+            ]
+        ]
+    } %}
+
+    {% for paragraph in content.sections.last.paragraphs %}
+        {% include 'email/_p.html.twig' with {
+            text: paragraph.text
+        } %}
+    {% endfor %}
+
+{% endblock %}

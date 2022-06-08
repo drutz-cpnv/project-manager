@@ -2,30 +2,30 @@
 
 namespace App\Repository;
 
-use App\Entity\Document;
+use App\Entity\ClientEvaluation;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\ORM\OptimisticLockException;
 use Doctrine\ORM\ORMException;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
- * @method Document|null find($id, $lockMode = null, $lockVersion = null)
- * @method Document|null findOneBy(array $criteria, array $orderBy = null)
- * @method Document[]    findAll()
- * @method Document[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
+ * @method ClientEvaluation|null find($id, $lockMode = null, $lockVersion = null)
+ * @method ClientEvaluation|null findOneBy(array $criteria, array $orderBy = null)
+ * @method ClientEvaluation[]    findAll()
+ * @method ClientEvaluation[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
  */
-class DocumentRepository extends ServiceEntityRepository
+class ClientEvaluationRepository extends ServiceEntityRepository
 {
     public function __construct(ManagerRegistry $registry)
     {
-        parent::__construct($registry, Document::class);
+        parent::__construct($registry, ClientEvaluation::class);
     }
 
     /**
      * @throws ORMException
      * @throws OptimisticLockException
      */
-    public function add(Document $entity, bool $flush = true): void
+    public function add(ClientEvaluation $entity, bool $flush = true): void
     {
         $this->_em->persist($entity);
         if ($flush) {
@@ -37,7 +37,7 @@ class DocumentRepository extends ServiceEntityRepository
      * @throws ORMException
      * @throws OptimisticLockException
      */
-    public function remove(Document $entity, bool $flush = true): void
+    public function remove(ClientEvaluation $entity, bool $flush = true): void
     {
         $this->_em->remove($entity);
         if ($flush) {
@@ -46,15 +46,15 @@ class DocumentRepository extends ServiceEntityRepository
     }
 
     // /**
-    //  * @return Document[] Returns an array of Document objects
+    //  * @return ClientEvaluation[] Returns an array of ClientEvaluation objects
     //  */
     /*
     public function findByExampleField($value)
     {
-        return $this->createQueryBuilder('d')
-            ->andWhere('d.exampleField = :val')
+        return $this->createQueryBuilder('c')
+            ->andWhere('c.exampleField = :val')
             ->setParameter('val', $value)
-            ->orderBy('d.id', 'ASC')
+            ->orderBy('c.id', 'ASC')
             ->setMaxResults(10)
             ->getQuery()
             ->getResult()
@@ -63,10 +63,10 @@ class DocumentRepository extends ServiceEntityRepository
     */
 
     /*
-    public function findOneBySomeField($value): ?Document
+    public function findOneBySomeField($value): ?ClientEvaluation
     {
-        return $this->createQueryBuilder('d')
-            ->andWhere('d.exampleField = :val')
+        return $this->createQueryBuilder('c')
+            ->andWhere('c.exampleField = :val')
             ->setParameter('val', $value)
             ->getQuery()
             ->getOneOrNullResult()

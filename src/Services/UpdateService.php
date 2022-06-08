@@ -25,7 +25,6 @@ class UpdateService
         private RoleRepository $roleRepository,
         private UserRepository $userRepository,
         private PersonRepository $personRepository,
-        private DefaultService $defaultService,
     )
     {
     }
@@ -35,7 +34,12 @@ class UpdateService
         $this->personFactory->updateFormAPI($this->intranetClient->findAllStudents());
     }
 
-    public function classes()
+    public function teachers(): void
+    {
+        $this->personFactory->updateFormAPI($this->intranetClient->findAllTeachers());
+    }
+
+    public function classes(): void
     {
         //$apiClasses = $this->intranetClient->findAllClasses();
 
@@ -53,10 +57,6 @@ class UpdateService
         $this->entityManager->flush();
     }
 
-    public function settings()
-    {
-        $this->defaultService->persistSettings();
-    }
 
     public function addStudentRoleToStudents()
     {

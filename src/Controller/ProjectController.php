@@ -79,7 +79,6 @@ class ProjectController extends BaseController
     }
 
 
-
     #[Route("/{id}/team", name: "show.teams")]
     public function teams(Project $project): Response
     {
@@ -255,8 +254,10 @@ class ProjectController extends BaseController
         $form = $this->createForm(ProjectFormType::class, $project);
         $form->handleRequest($request);
 
+        $oldVersionProject = clone $project;
+
         if($form->isSubmitted() && $form->isValid()) {
-            $this->projectService->update($project);
+            $this->projectService->update($project, $oldVersionProject);
             return $this->redirectToRoute('project.settings', ['id' => $project->getId()], Response::HTTP_SEE_OTHER);
         }
 
@@ -283,6 +284,7 @@ class ProjectController extends BaseController
     #[Route("/{id}/evaluations/coach", name: "coach.evaluate")]
     public function coachEval(Project $project, Request $request): Response
     {
+        $this->denyAccessUnlessGranted('FINAL_EVAL', $project);
         $this->projectService->addCoachFinalNotes($project);
 
         $form = $this->createForm(ProjectTeacherEvaluationFormType::class, $project);

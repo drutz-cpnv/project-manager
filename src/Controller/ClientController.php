@@ -7,6 +7,7 @@ use App\Entity\User;
 use App\Form\MandateType;
 use App\Repository\ClientRepository;
 use App\Services\ClientService;
+use App\Services\MailerService;
 use App\Services\MandateService;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -19,7 +20,8 @@ class ClientController extends BaseController
     public function __construct(
         private ClientRepository $clientRepository,
         private ClientService $clientService,
-        private MandateService $mandateService
+        private MandateService $mandateService,
+        private MailerService $mailerService
     )
     {}
 
@@ -32,6 +34,7 @@ class ClientController extends BaseController
 
         if(is_null($client)) {
             $client = $this->clientService->createFromUser($user);
+            $this->mailerService->copilNewClient($client);
         }
 
         $mandate = (new Mandate())

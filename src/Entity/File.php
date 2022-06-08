@@ -50,10 +50,10 @@ class File
     #[ORM\ManyToOne(targetEntity: User::class, inversedBy: 'files')]
     private $createdBy;
 
-    #[ORM\ManyToOne(targetEntity: Mandate::class, inversedBy: 'files')]
+    #[ORM\ManyToOne(targetEntity: Mandate::class, cascade: ["remove"], inversedBy: 'files')]
     private $mandate;
 
-    #[ORM\ManyToOne(targetEntity: Project::class, inversedBy: 'files')]
+    #[ORM\ManyToOne(targetEntity: Project::class, cascade: ["remove"], inversedBy: 'files')]
     private $project;
 
     public function __construct()

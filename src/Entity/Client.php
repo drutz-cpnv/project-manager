@@ -33,15 +33,19 @@ class Client
     #[ORM\Column(type: 'string', length: 255, nullable: true)]
     private $phoneNumber;
 
-    #[ORM\OneToOne(inversedBy: 'client', targetEntity: Person::class, cascade: ['persist', 'remove'])]
+    #[ORM\OneToOne(inversedBy: 'client', targetEntity: Person::class, cascade: ['persist'])]
     private $person;
 
     #[ORM\Column(type: 'string', length: 255, nullable: true)]
     private $contact;
 
+    #[ORM\OneToMany(mappedBy: 'client', targetEntity: ClientEvaluation::class)]
+    private $clientEvaluations;
+
     public function __construct()
     {
         $this->mandates = new ArrayCollection();
+        $this->clientEvaluations = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -164,6 +168,36 @@ class Client
     public function setContact(?string $contact): self
     {
         $this->contact = $contact;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, ClientEvaluation>
+     */
+    public function getClientEvaluations(): Collection
+    {
+        return $this->clientEvaluations;
+    }
+
+    public function addClientEvaluation(ClientEvaluation $clientEvaluation): self
+    {
+        if (!$this->clientEvaluations->contains($clientEvaluation)) {
+            $this->clientEvaluations[] = $clientEvaluation;
+            $clientEvaluation->setClient($this);
+        }
+
+        return $this;
+    }
+
+    public function removeClientEvaluation(ClientEvaluation $clientEvaluation): self
+    {
+        if ($this->clientEvaluations->removeElement($clientEvaluation)) {
+            // set the owning side to null (unless already changed)
+            if ($clientEvaluation->getClient() === $this) {
+                $clientEvaluation->setClient(null);
+            }
+        }
 
         return $this;
     }

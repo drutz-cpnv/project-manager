@@ -44,7 +44,8 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(type: 'datetime_immutable')]
     private $updatedAt;
 
-    #[ORM\ManyToOne(targetEntity: self::class)]
+    #[ORM\ManyToOne(targetEntity: self::class, cascade: ["persist"])]
+    #[ORM\JoinColumn(onDelete: "SET NULL")]
     private $updatedBy;
 
     #[ORM\OneToMany(mappedBy: 'createdBy', targetEntity: Project::class)]
@@ -59,9 +60,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\OneToMany(mappedBy: 'createdBy', targetEntity: File::class)]
     private $files;
 
-    #[ORM\OneToMany(mappedBy: 'createdBy', targetEntity: Document::class)]
-    private $documents;
-
     #[ORM\Column(type: 'datetime_immutable', nullable: true)]
     private $bannedAt;
 
@@ -75,7 +73,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         $this->updatedProjects = new ArrayCollection();
         $this->memberships = new ArrayCollection();
         $this->files = new ArrayCollection();
-        $this->documents = new ArrayCollection();
     }
 
     /**
@@ -367,36 +364,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-    /**
-     * @return Collection<int, Document>
-     */
-    public function getDocuments(): Collection
-    {
-        return $this->documents;
-    }
-
-    public function addDocument(Document $document): self
-    {
-        if (!$this->documents->contains($document)) {
-            $this->documents[] = $document;
-            $document->setCreatedBy($this);
-        }
-
-        return $this;
-    }
-
-    public function removeDocument(Document $document): self
-    {
-        if ($this->documents->removeElement($document)) {
-            // set the owning side to null (unless already changed)
-            if ($document->getCreatedBy() === $this) {
-                $document->setCreatedBy(null);
-            }
-        }
-
-        return $this;
-    }
-
 
     /**
      * Data from related Person entity
@@ -417,7 +384,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this->getFirstname() . " " . $this->getLastname();
     }
 
-    public function getClass(): Classe
+    public function getClass(): ?Classe
     {
         return $this->getPerson()->getClass();
     }

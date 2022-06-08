@@ -35,7 +35,7 @@ class Member
     #[ORM\JoinColumn(nullable: false)]
     private $project;
 
-    #[ORM\OneToMany(mappedBy: 'student', targetEntity: PersonalEvaluation::class)]
+    #[ORM\OneToMany(mappedBy: 'student', targetEntity: PersonalEvaluation::class, orphanRemoval: true)]
     private $evaluations;
 
     public function __construct()

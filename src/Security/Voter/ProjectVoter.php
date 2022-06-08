@@ -14,6 +14,8 @@ class ProjectVoter extends Voter
     public const EDIT = 'EDIT';
     public const VIEW = 'VIEW';
     public const SIMPLE_EDIT = 'SIMPLE_EDIT';
+    public const FINAL_EVAL = 'FINAL_EVAL';
+    public const EVALUATE_MEMBER = 'EVALUATE_MEMBER';
 
     public function __construct(
         private Security $security
@@ -25,7 +27,7 @@ class ProjectVoter extends Voter
     {
         // replace with your own logic
         // https://symfony.com/doc/current/security/voters.html
-        return in_array($attribute, [self::EDIT, self::VIEW, self::SIMPLE_EDIT])
+        return in_array($attribute, [self::EDIT, self::VIEW, self::SIMPLE_EDIT, self::FINAL_EVAL, self::EVALUATE_MEMBER])
             && $subject instanceof Project;
     }
 
@@ -45,6 +47,7 @@ class ProjectVoter extends Voter
             self::SIMPLE_EDIT => $this->canSimpleEdit($project, $user),
             self::EDIT => $this->canEdit($project, $user),
             self::VIEW => $this->canView($project, $user),
+            self::FINAL_EVAL => $this->canEvaluateFinish($project, $user),
             default => false
         };
     }
@@ -67,6 +70,12 @@ class ProjectVoter extends Voter
     {
         if ($this->canEdit($project, $user)) return true;
         if ($project->getManager()->getUser() === $user) return true;
+        return false;
+    }
+
+    private function canEvaluateFinish(Project $project, User $user): bool
+    {
+        if ($this->security->isGranted('ROLE_COACH', $user) && $project->getCoach()->getId() === $user->getPerson()->getId() && $project->getTeacherEvaluation()->isEmpty()) return true;
         return false;
     }
 }

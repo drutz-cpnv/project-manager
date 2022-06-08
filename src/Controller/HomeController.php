@@ -2,8 +2,10 @@
 
 namespace App\Controller;
 
+use App\Entity\Client;
 use App\Repository\PersonRepository;
 use App\Repository\UserRepository;
+use App\Services\SetupService;
 use App\Services\UpdateService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Response;
@@ -17,12 +19,12 @@ class HomeController extends BaseController
         private PersonRepository $personRepository,
         private EntityManagerInterface $em,
     )
-    {
-    }
+    {}
 
     #[Route("", name: "home")]
-    public function index(UpdateService $updateService): Response
+    public function index(SetupService $setupService): Response
     {
+        //$setupService->reset();
         return $this->render('front/pages/home.html.twig', [
             'menu' => "home"
         ]);

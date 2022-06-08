@@ -66,7 +66,7 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
 
     public function findAllCopil()
     {
-        
+        return $this->findByRole(3);
     }
 
     public function findByRole(mixed $role)
@@ -79,7 +79,6 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
         }
 
         return $result
-            ->setMaxResults(10)
             ->getQuery()
             ->getResult();
 

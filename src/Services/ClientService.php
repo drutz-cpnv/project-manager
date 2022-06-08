@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Entity\Client;
+use App\Entity\Person;
 use App\Entity\User;
 use App\Repository\ClientRepository;
 use App\Repository\PersonRepository;
@@ -22,9 +23,11 @@ class ClientService
         private readonly UserService $userService,
         private readonly UserPasswordHasherInterface $userPasswordHasher,
         private readonly ClientRepository $clientRepository,
+        private readonly MailerService $mailerService,
     )
     {
     }
+
 
     public function create(User $user, FormInterface $form): void
     {
@@ -62,6 +65,8 @@ class ClientService
             )
         );
 
+        //$this->mailerService->copilNewClient($client);
+
         $this->entityManager->persist($user);
         $this->entityManager->flush();
     }
@@ -75,6 +80,25 @@ class ClientService
             ->setLastname($user->getPerson()->getLastname())
             ->setFirstname($user->getPerson()->getFirstname())
             ;
+    }
+
+    public function createFromPerson(Person $person): Client
+    {
+        if(!is_null($person->getClient())) return $person->getClient();
+        if(!is_null($person->getUser())) {
+            $this->userService->addRole("ROLE_CLIENT", $person->getUser());
+        }
+        return (new Client())
+            ->setPerson($person)
+            ->setEmail($person->getEmail())
+            ->setLastname($person->getLastname())
+            ->setFirstname($person->getFirstname())
+            ;
+    }
+
+    public function update(Client $client)
+    {
+        $this->entityManager->flush();
     }
 
 }

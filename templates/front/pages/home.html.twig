@@ -24,11 +24,11 @@
                     <a class="nav-item" href="{{ path('app.client.index') }}">
                         <span class="icon">{{ feather('book') }}</span>
                         <span class="nav-item__text">Mes mandats</span>
-                    </a>
+                    </a>{#
                     <a class="nav-item" href="#">
                         <span class="icon">{{ feather('zap') }}</span>
                         <span class="nav-item__text">Afficher un mandat</span>
-                    </a>
+                    </a>#}
                     {% endif %}
 
                     {% if is_granted('ROLE_CLIENT') or is_granted('ROLE_CPNV') %}

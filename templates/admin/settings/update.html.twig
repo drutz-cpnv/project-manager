@@ -1,0 +1,17 @@
+{% extends 'base.html.twig' %}
+
+{% set hasNavTabs = true %}
+
+{% block navTabs %}
+    {{ include('partials/admin/settings/_settings_tabs_header.html.twig') }}
+{% endblock %}
+
+{% block title %}Paramètres{% endblock %}
+
+{% block body %}
+    <div class="w-75 mx-auto mt-5">
+        <h2 class="h1 mb-5">Modification des paramètres</h2>
+    </div>
+{% endblock %}
+
+

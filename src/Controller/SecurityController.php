@@ -94,19 +94,7 @@ class SecurityController extends BaseController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-
             $clientService->create($user, $form);
-
-            // generate a signed url and email it to the user
-            $this->emailVerifier->sendEmailConfirmation('security.verify_email', $user,
-                (new TemplatedEmail())
-                    ->from(new Address('junior-entreprise@je.drutz.ch', 'Junior Entreprise'))
-                    ->to($user->getEmail())
-                    ->subject('Veuillez confirmer votre demande d\'accès')
-                    ->htmlTemplate('registration/confirmation_email.html.twig')
-            );
-            // do anything else you need here, like send an email
-
             return $this->redirectToRoute('app.home');
         }
 

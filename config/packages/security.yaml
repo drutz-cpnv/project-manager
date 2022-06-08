@@ -37,6 +37,7 @@ security:
     access_control:
         - { path: ^/connexion, roles: PUBLIC_ACCESS }
         - { path: ^/inscription, roles: PUBLIC_ACCESS }
+        - { path: ^/connector, roles: PUBLIC_ACCESS }
         #- { path: ^/reset-password, roles: PUBLIC_ACCESS }
         - { path: ^/panel, roles: [ROLE_STUDENT, ROLE_TEACHER] }
         - { path: ^/mes-mandats, roles: [ROLE_CLIENT]}

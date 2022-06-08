@@ -4,8 +4,11 @@
 
 {% block body %}
     <div class="w-75 mx-auto mt-5">
-        <a href="{{ path('admin.user.index') }}" class="btn-sm btn-secondary">Retour</a>
+        <a href="{{ path('admin.user.index') }}" class="btn-sm btn-secondary text-decoration-none">{{ feather('chevron-left') }} Retour</a>
         <h4 class="h4 mt-2">Ajouter ou supprimer un role à {{ user }}</h4>
+        <div class="alert alert-warning" role="alert">
+            Certains roles <strong>NE DOIVENT PAS</strong> êtres ajoutés à la main. Comme le rôle de <strong>Supérviseur</strong>, <strong>Client</strong> ou <strong>Directeur</strong>.
+        </div>
         <hr>
         <div class="list-group">
             {% for role in roles %}

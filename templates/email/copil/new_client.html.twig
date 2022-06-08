@@ -1,0 +1,41 @@
+{% extends 'email/base.html.twig' %}
+
+{% set subject_header_color = "#136bf5" %}
+
+{% block title %}{{ title }}{% endblock %}
+{% block subject %}{{ subject }}{% endblock %}
+{% block subject_header %}{{ subject_header }}{% endblock %}
+{% block content %}
+
+    {% include 'email/_p.html.twig' with {
+        text: "Voici les données du client venant de s'inscrire:"
+    } %}
+
+    {{ include('email/_spacer.html.twig') }}
+    {% include 'email/_table.html.twig' with {
+        cels: [
+            [
+                "Nom du client",
+                client
+            ],
+            [
+                "Adresse Email",
+                client.email
+            ],
+            [
+                "Société",
+                client.company ?? "Aucune société"
+            ],
+            [
+                "Numéro de téléphone",
+                client.currentStatus
+            ],
+            [
+                "Personne de contact au CPNV",
+                client.contact ?? "Aucune"
+            ],
+        ]
+    } %}
+
+
+{% endblock %}

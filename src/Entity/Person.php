@@ -156,6 +156,7 @@ class Person
 
     public function isDirector(): bool
     {
+        if (is_null($this->getUser())) return false;
         return in_array('ROLE_DIRECTOR', $this->getUser()->getRoles());
     }
 

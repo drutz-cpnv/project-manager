@@ -17,6 +17,13 @@ class Project
     public const STATE_CANCELED = 3;
     public const STATE_FINISHED = 4;
 
+    public const MANDATE_RELATED_STATE = [
+        self::STATE_IN_PROGRESS => Mandate::STATE_ACTIVE,
+        self::STATE_STANDBY => Mandate::STATE_ACTIVE,
+        self::STATE_CANCELED => Mandate::STATE_CANCEL,
+        self::STATE_FINISHED => Mandate::STATE_TERMINATED,
+    ];
+
     public const STATE_ICONS = [
         self::STATE_IN_PROGRESS => 'flash',
         self::STATE_STANDBY => 'pause-circle',
@@ -63,7 +70,7 @@ class Project
     #[ORM\ManyToOne(targetEntity: User::class, inversedBy: 'updatedProjects')]
     private $updatedBy;
 
-    #[ORM\OneToMany(mappedBy: 'project', targetEntity: Milestone::class, cascade: ['persist'], orphanRemoval: true)]
+    #[ORM\OneToMany(mappedBy: 'project', targetEntity: Milestone::class, cascade: ['persist', 'remove'], orphanRemoval: true)]
     private $milestones;
 
     #[ORM\ManyToOne(targetEntity: Mandate::class, inversedBy: 'projects')]
@@ -87,8 +94,14 @@ class Project
     #[ORM\OneToMany(mappedBy: 'project', targetEntity: File::class)]
     private $files;
 
-    #[ORM\OneToMany(mappedBy: 'project', targetEntity: Note::class, cascade: ['persist'])]
+    #[ORM\OneToMany(mappedBy: 'project', targetEntity: Note::class, cascade: ['persist', 'remove'], orphanRemoval: true)]
     private $teacherEvaluation;
+
+    #[ORM\OneToOne(mappedBy: 'project', targetEntity: ClientEvaluation::class, cascade: ['persist', 'remove'], orphanRemoval: true)]
+    private $clientEvaluation;
+
+    #[ORM\Column(type: 'integer')]
+    private $code;
 
     public function __construct()
     {
@@ -405,6 +418,35 @@ class Project
                 $teacherEvaluation->setProject(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getClientEvaluation(): ?ClientEvaluation
+    {
+        return $this->clientEvaluation;
+    }
+
+    public function setClientEvaluation(ClientEvaluation $clientEvaluation): self
+    {
+        // set the owning side of the relation if necessary
+        if ($clientEvaluation->getProject() !== $this) {
+            $clientEvaluation->setProject($this);
+        }
+
+        $this->clientEvaluation = $clientEvaluation;
+
+        return $this;
+    }
+
+    public function getCode(): ?int
+    {
+        return $this->code;
+    }
+
+    public function setCode(int $code): self
+    {
+        $this->code = $code;
 
         return $this;
     }
